@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atomic Structure Review Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;700&family=Roboto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF7F2; --bg:#F5F1EA; --white:#FFFFFF; --ink:#1C1917; --warm:#57534E; --warm-muted:#7C6F5A;
+    --indigo:#4F46E5; --indigo-2:#6366F1; --indigo-hover:#4338CA; --indigo-soft:rgba(79,70,229,0.08); --indigo-line:rgba(79,70,229,0.28);
+    --amber:#B4791F; --amber-soft:#FBF3E2; --amber-line:#EBD9A8;
+    --green:#4F7A3A; --red:#C24A32;
+    --line:#E7E0D3; --line-soft:#F0EBE1;
+    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-serif:'Roboto Serif',Georgia,serif;
+    --font-mono:'Roboto Mono',monospace;
+    --sh-sm:0 1px 2px rgba(28,25,23,0.05),0 1px 3px rgba(28,25,23,0.06);
+    --sh-md:0 6px 20px rgba(28,25,23,0.08);
+    --sh-lg:0 18px 44px rgba(28,25,23,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-sans);background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
+  sub{font-size:0.7em} sup{font-size:0.7em}
+  .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--indigo);font-weight:700}
+  .serif{font-family:var(--font-serif)}
+
+  /* ============ PASSWORD GATE ============ */
+  #gate{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#2A2550 0%,#4F46E5 55%,#6366F1 100%);display:flex;align-items:center;justify-content:center;padding:24px}
+  #gate.hide{display:none}
+  #gate::before{content:'';position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,0.06) 1px,transparent 2px);background-size:38px 38px;pointer-events:none}
+  .gate-card{position:relative;background:var(--white);border-radius:20px;box-shadow:var(--sh-lg);padding:40px 36px;max-width:410px;width:100%;text-align:center}
+  .gate-badge{width:56px;height:56px;border-radius:16px;background:var(--indigo-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .gate-badge svg{width:30px;height:30px;stroke:var(--indigo);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .gate-card h1{font-family:var(--font-serif);font-size:24px;font-weight:700;margin-bottom:6px}
+  .gate-card p{font-size:13.5px;color:var(--warm);margin-bottom:22px}
+  .gate-card input{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:11px;font-family:var(--font-sans);font-size:15px;color:var(--ink);text-align:center;letter-spacing:0.04em}
+  .gate-card input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-soft)}
+  .gate-card button{width:100%;margin-top:12px;padding:13px;border:none;border-radius:11px;background:var(--indigo);color:#fff;font-family:var(--font-sans);font-weight:700;font-size:15px;cursor:pointer;transition:background .15s}
+  .gate-card button:hover{background:var(--indigo-hover)}
+  .gate-err{color:var(--red);font-size:12.5px;font-weight:600;min-height:16px;margin-top:10px}
+
+  /* ============ VIEWS ============ */
+  .view{display:none} .view.active{display:block}
+
+  /* ============ MENU ============ */
+  .hero{background:linear-gradient(150deg,#4F46E5 0%,#6366F1 100%);color:#fff;padding:56px 30px 92px;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.06) 1px,transparent 2px);background-size:40px 40px;pointer-events:none}
+  .hero .kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:0.34em;text-transform:uppercase;opacity:0.9;font-weight:500;position:relative}
+  .hero h1{font-family:var(--font-serif);font-size:2.7rem;font-weight:700;letter-spacing:-0.5px;margin:10px 0 12px;position:relative;line-height:1.08}
+  .hero p{font-size:1rem;opacity:0.94;max-width:600px;margin:0 auto;position:relative}
+  .hero .badges{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:20px;position:relative}
+  .hero .badges span{background:rgba(255,255,255,0.18);padding:6px 13px;border-radius:20px;font-size:0.72rem;font-weight:600;letter-spacing:0.04em}
+
+  .wrap{max-width:1140px;margin:0 auto;padding:0 26px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:-56px;position:relative;z-index:2}
+  @media(max-width:860px){.cards{grid-template-columns:1fr}}
+  .sec-card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-md);overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+  .sec-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg)}
+  .sec-card .top{padding:22px 22px 16px;border-top:4px solid var(--indigo)}
+  .sec-card .num{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:0.2em;color:var(--indigo)}
+  .sec-card h2{font-family:var(--font-serif);font-size:1.32rem;font-weight:700;margin:8px 0 5px;color:var(--ink)}
+  .sec-card .desc{font-size:0.86rem;color:var(--warm);min-height:38px}
+  .sec-card .foot{padding:0 22px 20px;margin-top:auto}
+  .sec-card .meta{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}
+  .sec-card .meta span{background:var(--indigo-soft);color:var(--indigo);padding:4px 10px;border-radius:9px;font-size:0.7rem;font-weight:700;font-family:var(--font-mono);letter-spacing:0.02em}
+  .sec-card .go{width:100%;padding:11px;border:none;border-radius:10px;background:var(--indigo);color:#fff;font-family:var(--font-sans);font-weight:700;font-size:0.92rem;cursor:pointer;transition:background .15s}
+  .sec-card .go:hover{background:var(--indigo-hover)}
+  .menu-note{text-align:center;color:var(--warm-muted);font-size:0.78rem;font-family:var(--font-mono);letter-spacing:0.04em;margin:26px 0 8px}
+
+  /* ============ SCOREBOARD ============ */
+  .score-mount{margin:24px 0}
+  .scoreboard{background:var(--white);border:1px solid var(--line);border-radius:15px;box-shadow:var(--sh-sm);padding:12px 14px;display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .sb-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.16em;color:var(--warm-muted);display:flex;align-items:center;padding-right:12px;border-right:1px solid var(--line)}
+  .team{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:9px 12px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:118px;flex:1;position:relative;transition:all .2s}
+  .team.leader{background:linear-gradient(150deg,#EEF0FF,#E3E6FF);border-color:var(--indigo-line)}
+  .team.leader::after{content:'LEAD';position:absolute;top:-8px;right:8px;background:var(--indigo);color:#fff;font-size:0.52rem;font-family:var(--font-mono);font-weight:700;letter-spacing:0.12em;padding:2px 7px;border-radius:6px}
+  .team-name{font-size:0.78rem;font-weight:700;background:transparent;border:none;color:var(--ink);text-align:center;width:100%;max-width:120px;padding:2px;cursor:pointer;font-family:var(--font-sans)}
+  .team-name:focus{background:var(--white);outline:none;border-radius:5px;cursor:text;box-shadow:0 0 0 2px var(--indigo-soft)}
+  .team-score{font-size:1.7rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;color:var(--indigo);margin:2px 0}
+  .team.leader .team-score{color:var(--indigo-hover)}
+  .team-btns{display:flex;gap:5px;align-items:center}
+  .team-btns button{border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:var(--font-sans);transition:transform .1s,filter .15s}
+  .t-plus{background:var(--indigo);color:#fff;padding:5px 15px;font-size:0.95rem}
+  .t-plus:hover{filter:brightness(1.08);transform:scale(1.05)}
+  .t-minus{background:#EDE7DA;color:var(--warm);padding:4px 9px;font-size:0.8rem}
+  .t-minus:hover{background:#e2dccb}
+  .sb-ctrl{display:flex;gap:6px;align-items:center;margin-left:auto;padding-left:12px;border-left:1px solid var(--line)}
+  .sb-ctrl select,.sb-ctrl button{background:var(--cream);color:var(--warm);border:1px solid var(--line);padding:7px 11px;border-radius:8px;font-size:0.74rem;font-weight:600;font-family:var(--font-sans);cursor:pointer}
+  .sb-ctrl button:hover,.sb-ctrl select:hover{background:#efe9dd}
+  .sb-ctrl .reset{color:var(--red)}
+  @media(max-width:680px){.team{min-width:88px;padding:7px 8px}.team-score{font-size:1.35rem}.sb-label{padding-right:8px}}
+
+  /* ============ PLAY VIEW ============ */
+  .play-head{background:var(--white);border-bottom:1px solid var(--line);padding:14px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+  .back{background:var(--cream);color:var(--indigo);border:1px solid var(--line);padding:8px 14px;border-radius:9px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:var(--font-sans);display:flex;align-items:center;gap:6px}
+  .back:hover{background:#efe9dd}
+  .play-title{font-family:var(--font-serif);font-size:1.05rem;font-weight:700;color:var(--ink)}
+  .play-title small{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:0.18em;color:var(--warm-muted);font-weight:500;margin-top:2px}
+  .counter{background:var(--indigo-soft);color:var(--indigo);padding:7px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;font-family:var(--font-mono);letter-spacing:0.05em}
+
+  .stage{max-width:920px;margin:24px auto 60px;padding:0 26px}
+
+  /* timer */
+  .timer-row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:14px;font-size:0.8rem;color:var(--warm)}
+  .timer-row label{font-weight:600;font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--warm-muted)}
+  .timer-row select,.timer-row button{padding:6px 12px;border:1px solid var(--line);border-radius:8px;font-family:var(--font-sans);font-size:0.8rem;font-weight:600;background:var(--white);color:var(--warm);cursor:pointer}
+  .timer-bar{height:9px;background:var(--line-soft);border-radius:9px;overflow:hidden;margin-bottom:8px}
+  .timer-fill{height:100%;width:100%;background:linear-gradient(90deg,var(--indigo),var(--indigo-2));transition:width .35s linear}
+  .timer-fill.warn{background:linear-gradient(90deg,#D6A02E,#E0B44A)}
+  .timer-fill.danger{background:linear-gradient(90deg,#D6603E,#C24A32);animation:pulse .8s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+  .timer-num{text-align:center;font-family:var(--font-mono);font-size:2.1rem;font-weight:700;color:var(--indigo);font-variant-numeric:tabular-nums;margin-bottom:22px}
+  .timer-num.danger{color:var(--red)}
+
+  /* chem card */
+  .card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-md);padding:34px 34px 30px;margin-bottom:18px}
+  .q-badges{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .lvl{padding:5px 13px;border-radius:20px;font-size:0.68rem;font-weight:700;font-family:var(--font-mono);letter-spacing:0.1em}
+  .lvl.simple{background:var(--indigo-soft);color:var(--indigo)}
+  .lvl.challenge{background:#F3E7DE;color:#B4551F}
+  .skill-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm-muted);font-weight:600}
+  .q-text{font-family:var(--font-serif);font-size:1.42rem;font-weight:600;color:var(--ink);line-height:1.42}
+  .q-text.chem{font-size:1.34rem}
+  .whiteboard-hint{display:flex;align-items:center;gap:9px;margin-top:20px;padding:12px 15px;background:var(--cream);border-radius:11px;font-size:0.86rem;color:var(--warm)}
+  .whiteboard-hint svg{width:18px;height:18px;stroke:var(--indigo);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* trivia */
+  .card.trivia{border-top:4px solid var(--amber);background:linear-gradient(180deg,#FFFDF8,var(--white))}
+  .trivia-cat{display:inline-block;background:var(--amber);color:#fff;padding:5px 14px;border-radius:16px;font-size:0.68rem;font-weight:700;font-family:var(--font-mono);letter-spacing:0.14em;margin-bottom:14px}
+  .brain-break{font-family:var(--font-mono);font-size:10px;letter-spacing:0.2em;color:var(--amber);font-weight:700;margin-bottom:6px;text-transform:uppercase}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+  @media(max-width:640px){.choices{grid-template-columns:1fr}}
+  .choice{background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:13px;font-size:1.02rem;color:var(--ink);transition:all .18s}
+  .choice .ltr{width:34px;height:34px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.95rem;flex-shrink:0;font-family:var(--font-mono)}
+  .choice.correct{background:#EEF6E9;border-color:var(--green)}
+  .choice.correct .ltr{background:var(--green)}
+  .choice.correct::after{content:'\2713';margin-left:auto;color:var(--green);font-weight:800;font-size:1.1rem}
+
+  /* reveal */
+  .reveal{background:var(--white);border:1px solid var(--line);border-left:5px solid var(--indigo);border-radius:14px;box-shadow:var(--sh-sm);padding:26px 28px;margin-bottom:18px;animation:fadeUp .35s ease-out}
+  .reveal.trivia-rev{border-left-color:var(--green)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .reveal-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .reveal-head .chk{width:28px;height:28px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+  .reveal.trivia-rev .chk{background:var(--green)}
+  .reveal-head h3{font-family:var(--font-serif);font-size:1.12rem;color:var(--ink)}
+  .sol{font-size:1rem;color:var(--ink);line-height:1.7}
+  .sol strong{color:var(--indigo);font-weight:700}
+  .reveal.trivia-rev .sol strong{color:var(--green)}
+  .visual{display:flex;justify-content:center;flex-wrap:wrap;gap:18px;margin:6px 0 18px;padding:18px;background:var(--cream);border-radius:12px}
+  .visual svg{max-width:100%;height:auto}
+  .bohr-svg{width:300px}
+  .bohr-sym{font-family:var(--font-serif);font-weight:700;font-size:26px;fill:var(--indigo)}
+  .bohr-pn{font-family:var(--font-mono);font-size:11px;fill:var(--warm-muted)}
+  .spec-svg{width:560px}
+  .spec-lbl{font-family:var(--font-mono);font-size:11px;fill:#fff;font-weight:500}
+  .spec-axis{font-family:var(--font-mono);font-size:9px;fill:var(--warm-muted)}
+  .emit-svg{width:320px}
+
+  /* controls */
+  .controls{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+  .btn{padding:13px 26px;border:none;border-radius:11px;font-size:0.94rem;font-weight:700;cursor:pointer;font-family:var(--font-sans);transition:all .16s}
+  .btn-primary{background:var(--indigo);color:#fff;min-width:170px}
+  .btn-primary:hover{background:var(--indigo-hover);transform:translateY(-1px)}
+  .btn-ghost{background:var(--cream);color:var(--warm);border:1px solid var(--line)}
+  .btn-ghost:hover{background:#efe9dd}
+  .btn-reveal{background:#F3E7DE;color:#B4551F}
+  .btn-reveal:hover{background:#eeddce;transform:translateY(-1px)}
+  .card.trivia ~ .controls .btn-reveal{background:var(--amber);color:#fff}
+
+  .app-foot{text-align:center;padding:26px 20px 40px;color:var(--warm-muted);font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.1em}
+</style>
+</head>
+<body>
+
+<!-- ============ PASSWORD GATE ============ -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-badge">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 class="serif">Atomic Structure Review Game</h1>
+    <p>This game is locked until class. Enter the access code your teacher gives you to begin.</p>
+    <input id="gate-input" type="password" placeholder="Access code" autocomplete="off" spellcheck="false">
+    <button id="gate-btn">Unlock Game</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
+
+<!-- ============ MENU ============ -->
+<div id="menu-view" class="view active">
+  <div class="hero">
+    <div class="kicker">Cycle 2 &middot; Follows the Atomic Structure Lecture (2a)</div>
+    <h1>Atomic Structure<br>Review Game</h1>
+    <p>Three rounds. Ten questions each. Chemistry and a wildcard brain-break, back to back. Work it out as a team before the reveal.</p>
+    <div class="badges">
+      <span>3 ROUNDS</span><span>10 QUESTIONS EACH</span><span>2:00 PER QUESTION</span><span>1&ndash;5 TEAMS</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="cards" id="section-cards"></div>
+    <div class="score-mount" id="score-menu"></div>
+    <div class="menu-note">Press F for fullscreen &middot; scores save on this device &middot; every other question is a wildcard trivia break</div>
+  </div>
+</div>
+
+<!-- ============ PLAY VIEW (reused for all 3 rounds) ============ -->
+<div id="play-view" class="view">
+  <div class="play-head">
+    <button class="back" onclick="goMenu()">&larr; Rounds</button>
+    <div class="play-title" id="play-title">Round<small id="play-sub">SKILL</small></div>
+    <div class="counter" id="counter">1 / 10</div>
+  </div>
+
+  <div class="wrap"><div class="score-mount" id="score-play"></div></div>
+
+  <div class="stage">
+    <div class="timer-row">
+      <label>Timer</label>
+      <select id="timer-len" onchange="resetTimer()">
+        <option value="60">1:00</option>
+        <option value="90">1:30</option>
+        <option value="120" selected>2:00</option>
+        <option value="150">2:30</option>
+        <option value="180">3:00</option>
+      </select>
+      <button id="pause-btn" onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Restart</button>
+    </div>
+    <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+    <div class="timer-num" id="timer-num">2:00</div>
+
+    <!-- question -->
+    <div id="q-stage"></div>
+    <div class="controls" id="q-controls"></div>
+
+    <!-- reveal -->
+    <div id="reveal-stage" style="display:none"></div>
+    <div class="controls" id="reveal-controls" style="display:none">
+      <button class="btn btn-ghost" onclick="backToQuestion()">&larr; Back</button>
+      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-foot">ATOMIC STRUCTURE REVIEW GAME &middot; BOHR &middot; ISOTOPES &middot; IONS &middot; SPARK LEARNING</div>
+
+<script>
+/* =========================================================================
+   ACCESS GATE  (soft gate: keeps students out until game time)
+   Change PASSWORD below to set a new code.
+   ========================================================================= */
+const PASSWORD = 'atomic2a';
+const UNLOCK_KEY = 'asrg-unlocked-v1';
+function isUnlocked(){ try{ return localStorage.getItem(UNLOCK_KEY)==='1'; }catch(e){ return false; } }
+function unlock(){
+  document.getElementById('gate').classList.add('hide');
+  initAudio();
+}
+if(isUnlocked()) unlock();
+document.getElementById('gate-btn').addEventListener('click', tryUnlock);
+document.getElementById('gate-input').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+function tryUnlock(){
+  const v = document.getElementById('gate-input').value.trim();
+  if(v === PASSWORD){
+    try{ localStorage.setItem(UNLOCK_KEY,'1'); }catch(e){}
+    unlock();
+  } else {
+    document.getElementById('gate-err').textContent = 'That code is not right. Ask your teacher.';
+    document.getElementById('gate-input').select();
+  }
+}
+
+/* =========================================================================
+   AUDIO  (escalating ticks + end alarm so nobody rushes the clock)
+   ========================================================================= */
+let actx = null;
+function initAudio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
+function tone(freq,dur,type,peak){
+  if(!actx) return;
+  const o=actx.createOscillator(), g=actx.createGain();
+  o.type=type; o.frequency.value=freq; o.connect(g); g.connect(actx.destination);
+  const t=actx.currentTime;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(peak,t+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.start(t); o.stop(t+dur+0.03);
+}
+function playTick(s){
+  if(s>30) tone(1000,0.04,'sine',0.05);
+  else if(s>10) tone(720,0.09,'triangle',0.13);
+  else if(s>0){ tone(880,0.12,'square',0.16); setTimeout(()=>tone(1320,0.12,'square',0.16),130); }
+}
+function playAlarm(){
+  // insistent-but-not-harsh descending triple: time is up
+  tone(660,0.45,'sine',0.20);
+  setTimeout(()=>tone(523,0.5,'sine',0.20),220);
+  setTimeout(()=>tone(392,0.75,'sine',0.20),470);
+}
+
+/* =========================================================================
+   SVG RENDERERS  (shell diagrams, emission spectra, energy-level drops)
+   ========================================================================= */
+function bohrSVG(spec){
+  const {symbol,protons,neutrons,shells}=spec, cx=175, cy=150;
+  let s=`<svg class="bohr-svg" viewBox="0 0 350 300" xmlns="http://www.w3.org/2000/svg">`;
+  shells.forEach((c,i)=>{ const r=50+i*30; s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--indigo-line)" stroke-width="1.3"/>`; });
+  s+=`<circle cx="${cx}" cy="${cy}" r="34" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="2"/>`;
+  s+=`<text x="${cx}" y="${cy-3}" text-anchor="middle" class="bohr-sym">${symbol}</text>`;
+  s+=`<text x="${cx}" y="${cy+15}" text-anchor="middle" class="bohr-pn">${protons}p &middot; ${neutrons}n</text>`;
+  shells.forEach((c,i)=>{
+    const r=50+i*30;
+    for(let e=0;e<c;e++){
+      const ang=(-90 + e*(360/c))*Math.PI/180;
+      const x=cx+r*Math.cos(ang), y=cy+r*Math.sin(ang);
+      s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="var(--indigo)"/>`;
+    }
+  });
+  return s+`</svg>`;
+}
+function spectrumSVG(lines){
+  const x0=30,x1=610,w=x1-x0, map=nm=>x0+((nm-400)/300)*w;
+  let s=`<svg class="spec-svg" viewBox="0 0 640 92" xmlns="http://www.w3.org/2000/svg">`;
+  s+=`<rect x="${x0}" y="6" width="${w}" height="50" rx="5" fill="#0a0a0a"/>`;
+  lines.forEach(l=>{ const x=map(l.nm); s+=`<rect x="${(x-1.7).toFixed(1)}" y="8" width="3.6" height="46" fill="${l.color}"/>`; s+=`<text x="${x.toFixed(0)}" y="74" text-anchor="middle" class="spec-lbl">${l.nm}</text>`; });
+  [400,500,600,700].forEach(n=>{ const x=map(n); s+=`<text x="${x.toFixed(0)}" y="88" text-anchor="middle" class="spec-axis">${n}nm</text>`; });
+  return s+`</svg>`;
+}
+function emitSVG(color){
+  // three energy levels, an electron kicked up (dashed) then falling back emitting a photon
+  return `<svg class="emit-svg" viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="var(--line)" stroke-width="2"><line x1="40" y1="165" x2="230" y2="165"/><line x1="40" y1="110" x2="230" y2="110"/><line x1="40" y1="58" x2="230" y2="58"/></g>
+    <g font-family="var(--font-mono)" font-size="11" fill="var(--warm-muted)"><text x="245" y="169">n=1</text><text x="245" y="114">n=2</text><text x="245" y="62">n=3</text></g>
+    <path d="M95 165 L95 62" stroke="var(--warm-muted)" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#up)"/>
+    <path d="M150 58 L150 162" stroke="${color}" stroke-width="3" marker-end="url(#dn)"/>
+    <text x="60" y="120" font-family="var(--font-sans)" font-size="10.5" fill="var(--warm-muted)">flame</text>
+    <path d="M158 110 q14 -8 28 0 q14 8 28 0" fill="none" stroke="${color}" stroke-width="2.5"/>
+    <text x="222" y="104" font-family="var(--font-sans)" font-size="10.5" fill="${color}" font-weight="700">photon</text>
+    <defs>
+      <marker id="up" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M4.5 0 L9 7 L0 7 Z" fill="var(--warm-muted)"/></marker>
+      <marker id="dn" markerWidth="9" markerHeight="9" refX="4.5" refY="7" orient="auto"><path d="M4.5 9 L9 2 L0 2 Z" fill="${color}"/></marker>
+    </defs>
+  </svg>`;
+}
+// Hydrogen Balmer palette (matches the Reading Starlight key)
+const H_LINES=[{nm:410,color:'#8F00D4'},{nm:434,color:'#5B2AE0'},{nm:486,color:'#00A6C8'},{nm:656,color:'#E8112D'}];
+
+/* =========================================================================
+   QUESTION DATA
+   Chem = open-response (work on whiteboards, then reveal the worked solution).
+   Trivia = multiple choice wildcard brain-break. They alternate chem/trivia.
+   ========================================================================= */
+const CHEM_S1 = [
+  { type:'chem', level:'Simple', skill:'Flame tests & energy levels',
+    q:`Back in the flame test lab, one unknown salt burned with an <b>apple-green</b> flame. Which metal ion was in that salt, and what tiny event inside each atom actually produced that green light?`,
+    emit:'#6AA84F',
+    solution:`<strong>Barium (Ba<sup>2+</sup>)</strong> gives the apple-green flame (about 524 nm). The light comes from the <em>electrons</em>, not the flame itself. The flame's heat kicks an electron up to a higher energy level (it gets <strong>excited</strong>). That spot is unstable, so the electron falls back down, and the energy it loses leaves as a single <strong>photon</strong> of green light. Every green photon = one electron dropping back to a lower shell.` },
+  { type:'chem', level:'Challenge', skill:'Reading a shell arrangement',
+    q:`A mystery neutral atom has the shell arrangement <b>2, 8, 4</b>. Name the element, state how many valence electrons it has, and explain how the shell arrangement <em>alone</em> lets you identify it.`,
+    bohr:{symbol:'Si',protons:14,neutrons:14,shells:[2,8,4]},
+    solution:`Add the shells: 2 + 8 + 4 = <strong>14 electrons</strong>. A neutral atom has equal protons and electrons, so it has 14 protons &mdash; and the proton count (the atomic number) <em>is</em> the element's identity. Atomic number 14 = <strong>silicon (Si)</strong>. Valence electrons are only the outermost shell: <strong>4</strong>. The arrangement alone is enough because total electrons &rarr; protons &rarr; atomic number &rarr; element.` },
+  { type:'chem', level:'Simple', skill:'Filling shells inside-out',
+    q:`A neutral <b>phosphorus</b> atom has 15 electrons. Write its shell arrangement, filling from the inside out, and state how many valence electrons it has.`,
+    bohr:{symbol:'P',protons:15,neutrons:16,shells:[2,8,5]},
+    solution:`Fill inner shells first: shell 1 holds 2, shell 2 holds 8, and the remaining 5 go into shell 3. Arrangement: <strong>2, 8, 5</strong>. Valence electrons = the outermost shell = <strong>5</strong>.` },
+  { type:'chem', level:'Challenge', skill:'Energy, wavelength & the fall',
+    q:`Hydrogen's visible lines all come from electrons landing on level n = 2: the n=3&rarr;2 fall emits <b>656 nm</b>, n=4&rarr;2 emits <b>486 nm</b>, n=5&rarr;2 emits <b>434 nm</b>, and n=6&rarr;2 emits <b>410 nm</b>. Rank these four falls from the <b>least</b> energy released to the <b>most</b>, and explain how you can tell just from the wavelengths.`,
+    spectrum:H_LINES,
+    solution:`Photon energy is <strong>inversely</strong> related to wavelength: shorter wavelength = higher energy. So going least &rarr; most energy means longest &rarr; shortest wavelength:<br><strong>656 nm (n3&rarr;2) &lt; 486 nm (n4&rarr;2) &lt; 434 nm (n5&rarr;2) &lt; 410 nm (n6&rarr;2)</strong>.<br>The red 656 nm photon carries the least energy; the violet 410 nm photon carries the most. Bigger falls (from higher levels) release more energy and bluer light.` },
+  { type:'chem', level:'Simple', skill:'Identify the gas from its fingerprint',
+    q:`Through a spectroscope you see exactly four sharp lines: red at <b>656 nm</b>, then lines at <b>486 nm</b> and <b>434 nm</b>, and violet at <b>410 nm</b>. What gas is in the tube, and what does each individual line represent?`,
+    spectrum:H_LINES,
+    solution:`This is the exact fingerprint of <strong>hydrogen</strong> &mdash; the same four lines from the Reading Starlight key. Each line is one specific electron transition: an electron falling to <strong>n = 2</strong> from a higher level, releasing a photon of that exact wavelength. Four lines = four different starting levels (n = 3, 4, 5, 6) all landing on n = 2.` },
+];
+const CHEM_S2 = [
+  { type:'chem', level:'Simple', skill:'Protons & neutrons from a symbol',
+    q:`Strontium gave the scarlet-red flame in the lab. One strontium atom is written with mass number <b>88</b> on top and atomic number <b>38</b> on the bottom. How many protons and how many neutrons are in this atom?`,
+    solution:`Atomic number (bottom) = protons = <strong>38</strong>. Neutrons = mass number &minus; atomic number = 88 &minus; 38 = <strong>50</strong>. So this atom has <strong>38 protons and 50 neutrons</strong>.` },
+  { type:'chem', level:'Challenge', skill:'Isotopes vs. different elements',
+    q:`Your lab partner compares two atoms. <b>Atom A</b> has 20 protons and 20 neutrons. <b>Atom B</b> has 20 protons and 22 neutrons. Your partner says, "They have different masses, so they must be different elements." Is your partner right? Write the nuclear symbol for each atom (mass on top, atomic number on bottom, then the symbol) and explain.`,
+    solution:`Your partner is <strong>wrong</strong>. The element is set by the <em>proton</em> count, and both atoms have 20 protons &mdash; so both are <strong>calcium</strong>. They are <strong>isotopes</strong>: same element, different neutron counts (and so different masses). Symbols: <strong><sup>40</sup><sub>20</sub>Ca</strong> (20+20) and <strong><sup>42</sup><sub>20</sub>Ca</strong> (20+22). Different mass number, same element.` },
+  { type:'chem', level:'Simple', skill:'Predict, then weight the average',
+    q:`Rubidium has two natural isotopes: <b>Rb-85 (72.2%)</b> and <b>Rb-87 (27.8%)</b>. Before you touch a calculator, predict: will rubidium's relative atomic mass land closer to 85 or 87? Then calculate A<sub>r</sub> to check.`,
+    solution:`Prediction: Rb-85 is far more abundant (72.2%), so the average is pulled <strong>closer to 85</strong>. Calculate:<br>A<sub>r</sub> = (0.722 &times; 85) + (0.278 &times; 87) = 61.37 + 24.186 = <strong>85.56</strong>.<br>It lands just above 85 &mdash; exactly as predicted.` },
+  { type:'chem', level:'Challenge', skill:'Weighted average, three isotopes',
+    q:`Magnesium has three natural isotopes: <b>Mg-24 (79.0%)</b>, <b>Mg-25 (10.0%)</b>, and <b>Mg-26 (11.0%)</b>. First predict which whole number the relative atomic mass sits closest to and why. Then extend the weighted-average method to all three and calculate A<sub>r</sub>. Show every line.`,
+    solution:`Prediction: Mg-24 dominates at 79%, so A<sub>r</sub> sits <strong>closest to 24</strong>. Calculate:<br>(0.790 &times; 24) = 18.96<br>(0.100 &times; 25) = 2.50<br>(0.110 &times; 26) = 2.86<br>Add them: 18.96 + 2.50 + 2.86 = <strong>24.32</strong>.<br>Same method as two isotopes &mdash; just one more term.` },
+  { type:'chem', level:'Simple', skill:'Relative atomic mass',
+    q:`Gallium, the metal that melts in your hand, has two natural isotopes: <b>Ga-69 (60.1%)</b> and <b>Ga-71 (39.9%)</b>. Calculate the relative atomic mass of gallium. Show every line.`,
+    solution:`A<sub>r</sub> = (0.601 &times; 69) + (0.399 &times; 71)<br>= 41.469 + 28.329<br>= <strong>69.80</strong>.<br>Just above 69, since Ga-69 is slightly more abundant.` },
+];
+const CHEM_S3 = [
+  { type:'chem', level:'Simple', skill:'Ion or isotope? Cation or anion?',
+    q:`A potassium atom loses one electron. Did it just become a different <b>isotope</b> or an <b>ion</b>? And is the result a <b>cation</b> or an <b>anion</b>?`,
+    solution:`Losing an <em>electron</em> changes charge, not the nucleus &mdash; so it becomes an <strong>ion</strong>, not an isotope (isotopes differ in <em>neutrons</em>). With one more proton than electron, the charge is +1: a <strong>cation</strong> (K<sup>+</sup>). Cations are positive; anions are negative.` },
+  { type:'chem', level:'Challenge', skill:'Full particle count for ions',
+    q:`Give the full particle count (protons, neutrons, electrons) for each ion, then say which is the cation and which is the anion: <b>(a)</b> mass-32 sulfur with a 2&minus; charge, and <b>(b)</b> mass-27 aluminum with a 3+ charge.`,
+    solution:`<strong>(a) Sulfur-32, 2&minus;:</strong> protons = 16, neutrons = 32 &minus; 16 = 16, electrons = 16 + 2 = <strong>18</strong>. Extra electrons &rarr; negative &rarr; <strong>anion</strong>.<br><strong>(b) Aluminum-27, 3+:</strong> protons = 13, neutrons = 27 &minus; 13 = 14, electrons = 13 &minus; 3 = <strong>10</strong>. Missing electrons &rarr; positive &rarr; <strong>cation</strong>.` },
+  { type:'chem', level:'Simple', skill:'Electrons in an anion',
+    q:`How many electrons are in a mass-19 <b>fluorine</b> ion with a <b>1&minus;</b> charge?`,
+    solution:`Fluorine has 9 protons (atomic number 9). A neutral atom would have 9 electrons; a 1&minus; charge means one <em>extra</em> electron: 9 + 1 = <strong>10 electrons</strong>. (The mass number 19 tells you neutrons = 10, but charge only involves electrons.)` },
+  { type:'chem', level:'Challenge', skill:'Isotopes AND ions at once',
+    q:`Iron has two common isotopes, iron-54 and iron-56. Suppose each loses two electrons to become a <b>2+</b> ion. Give the full particle count (protons, neutrons, electrons) for mass-54 Fe<sup>2+</sup> and mass-56 Fe<sup>2+</sup>. Then explain: in what way are these two particles <b>isotopes</b>, and in what way are they both <b>ions</b>?`,
+    solution:`Iron has 26 protons.<br><strong>Fe-54, 2+:</strong> 26 protons, 54 &minus; 26 = 28 neutrons, 26 &minus; 2 = <strong>24 electrons</strong>.<br><strong>Fe-56, 2+:</strong> 26 protons, 56 &minus; 26 = 30 neutrons, <strong>24 electrons</strong>.<br>They are <strong>isotopes</strong> of each other because they share 26 protons but differ in neutrons (28 vs 30). They are both <strong>ions</strong> because each lost 2 electrons, leaving a 2+ charge (24 electrons against 26 protons).` },
+  { type:'chem', level:'Simple', skill:'Protons never change',
+    q:`A neutral calcium atom (20 protons) loses two electrons to become <b>Ca<sup>2+</sup></b>. How many protons and how many electrons does the ion have now, and is it a cation or an anion?`,
+    solution:`Protons never change when ions form, so it still has <strong>20 protons</strong>. It lost 2 of its 20 electrons, leaving <strong>18 electrons</strong>. More protons than electrons &rarr; positive &rarr; <strong>cation</strong> (that is what the 2+ means).` },
+];
+
+const TRIVIA_S1 = [
+  {type:'trivia',category:'POP CULTURE',q:`In 2024, Taylor Swift made Grammy history by winning Album of the Year for the fourth time &mdash; more than any artist ever. Which album earned her that record-breaking win?`,choices:['Midnights','Lover','Folklore',"1989 (Taylor's Version)"],answer:0,explanation:`<strong>Midnights.</strong> It won Album of the Year at the 2024 Grammys, giving Swift her record fourth win in the category, passing Frank Sinatra, Stevie Wonder, and Paul Simon. (Folklore was her third, in 2021.)`},
+  {type:'trivia',category:'SPORTS',q:`At the 2024 Paris Olympics, Simone Biles returned to the Games and racked up medals. How many GOLD medals did she win in Paris?`,choices:['Three','One','Five','Two'],answer:0,explanation:`<strong>Three.</strong> Team, all-around, and vault, plus a silver on floor. That pushed her to seven career Olympic golds &mdash; the most decorated American gymnast in history.`},
+  {type:'trivia',category:'INTERNET & SLANG',q:`The slang term "rizz" &mdash; charm, or the ability to attract someone &mdash; was Oxford's 2023 Word of the Year. It is widely believed to be a shortened form of which word?`,choices:['Charisma','Rizzoli','Wrist','Risk'],answer:0,explanation:`<strong>Charisma.</strong> Clipped from the middle of the word, the same way "fridge" comes from "refrigerator." It beat out finalists like "Swiftie" and "situationship."`},
+  {type:'trivia',category:'MUSIC',q:`Charli XCX's 2024 album became such a phenomenon &mdash; a whole lime-green "summer" aesthetic &mdash; that Collins Dictionary named its one-word title the 2024 Word of the Year. What is the album called?`,choices:['Brat','Crash','Pop 2','Vroom Vroom'],answer:0,explanation:`<strong>Brat.</strong> The minimalist lime-green cover defined "brat summer" and won Collins' 2024 Word of the Year. It also earned nine Grammy nominations.`},
+  {type:'trivia',category:'FILM & TV',q:`Christopher Nolan's three-hour biopic about the physicist behind the atomic bomb swept the 2024 Oscars with seven wins, including Best Picture. What was the film?`,choices:['Oppenheimer','Poor Things','The Holdovers','Killers of the Flower Moon'],answer:0,explanation:`<strong>Oppenheimer.</strong> Seven Academy Awards including Best Picture, Best Director (Nolan), Best Actor (Cillian Murphy), and Best Supporting Actor (Robert Downey Jr.) &mdash; beating its "Barbenheimer" twin, Barbie.`},
+];
+const TRIVIA_S2 = [
+  {type:'trivia',category:'WORLD HISTORY',q:`The Treaty of Westphalia (1648), often cited as a foundation of the modern state system, ended which prolonged European conflict?`,choices:["The Hundred Years' War","The Thirty Years' War",'The Napoleonic Wars','The War of the Spanish Succession'],answer:1,explanation:`<strong>The Thirty Years' War.</strong> The Peace of Westphalia ended this devastating religious and political conflict and is credited with establishing the principle of state sovereignty that still shapes international relations.`},
+  {type:'trivia',category:'US GOVERNMENT',q:`Under the Constitution, how many electoral votes are needed to win the presidency, out of the total 538?`,choices:['218','270','290','301'],answer:1,explanation:`<strong>270.</strong> A majority of 538. That total is 435 House members + 100 senators + 3 votes for Washington, D.C. (granted by the 23rd Amendment).`},
+  {type:'trivia',category:'GEOGRAPHY',q:`Which of these countries is completely landlocked, with no coastline on any ocean or sea?`,choices:['Vietnam','Bolivia','Portugal','Somalia'],answer:1,explanation:`<strong>Bolivia.</strong> It lost its Pacific coastline to Chile in the War of the Pacific (1879&ndash;1884) and still keeps a symbolic navy on Lake Titicaca. The other three all have ocean coastlines.`},
+  {type:'trivia',category:'WORLD EVENTS',q:`Which country hosted the Summer Olympic Games most recently before 2026?`,choices:['Japan','Brazil','France','United Kingdom'],answer:2,explanation:`<strong>France.</strong> Paris hosted the 2024 Summer Olympics, its third time after 1900 and 1924. The next Summer Games are Los Angeles 2028.`},
+  {type:'trivia',category:'ECONOMICS',q:`In economics, what does GDP stand for?`,choices:['Gross Domestic Product','General Debt Percentage','Global Development Plan','Gross Distributed Payments'],answer:0,explanation:`<strong>Gross Domestic Product</strong> &mdash; the total market value of all finished goods and services produced within a country in a period. It is the most common single measure of an economy's size and health.`},
+];
+const TRIVIA_S3 = [
+  {type:'trivia',category:'LITERATURE',q:`In George Orwell's "1984," what is the name of the omnipresent leader whose face appears on posters with the caption "BIG BROTHER IS WATCHING YOU"?`,choices:['Emmanuel Goldstein','Big Brother',"O'Brien",'Winston Smith'],answer:1,explanation:`<strong>Big Brother.</strong> The symbolic face of the Party (who may not even exist as a real person). Orwell coined the term in 1949 and it is now shorthand for any invasive surveillance authority.`},
+  {type:'trivia',category:'SCIENCE',q:`Light from the Sun takes roughly how long to reach Earth?`,choices:['About 8 seconds','About 8 minutes','About 8 hours','About 8 days'],answer:1,explanation:`<strong>About 8 minutes</strong> (8 min 20 sec across ~93 million miles). We always see the Sun as it looked minutes ago, never in real time.`},
+  {type:'trivia',category:'GENERAL KNOWLEDGE',q:`Which country has the most time zones, owing to its far-flung overseas territories?`,choices:['Russia','United States','France','China'],answer:2,explanation:`<strong>France</strong> &mdash; 12 time zones thanks to territories across the Pacific, Caribbean, and Indian Ocean. Russia has 11; China uses just one official zone despite its width.`},
+  {type:'trivia',category:'LIFE SKILLS',q:`On a credit card, what does the APR primarily tell you?`,choices:['The yearly cost of borrowing money on the card','The card’s maximum spending limit','The reward points earned per dollar','The monthly fee to keep the card open'],answer:0,explanation:`<strong>The yearly cost of borrowing.</strong> APR (Annual Percentage Rate) is the interest you pay on balances you don't pay off. Paying the full statement each month avoids it entirely.`},
+  {type:'trivia',category:'ART & CULTURE',q:`Which artist painted the ceiling of the Sistine Chapel in the Vatican?`,choices:['Leonardo da Vinci','Raphael','Michelangelo','Donatello'],answer:2,explanation:`<strong>Michelangelo</strong>, between 1508 and 1512, including "The Creation of Adam." He considered himself a sculptor first and reportedly resented the years spent on the fresco.`},
+];
+
+// interleave chem/trivia -> 10 items per round, starting with chem
+function interleave(chem,trivia){
+  const out=[]; for(let i=0;i<5;i++){ out.push(chem[i]); out.push(trivia[i]); } return out;
+}
+const SECTIONS = [
+  { title:'Round 1 · Shells & Spectra', short:'BOHR MODELS · FLAME TESTS', desc:'Shell arrangements, valence electrons, and the light atoms give off.', items:interleave(CHEM_S1,TRIVIA_S1) },
+  { title:'Round 2 · Same Element, New Weight', short:'ISOTOPES · RELATIVE ABUNDANCE', desc:'Neutrons, nuclear symbols, and weighted-average atomic mass.', items:interleave(CHEM_S2,TRIVIA_S2) },
+  { title:'Round 3 · Gaining & Losing', short:'IONS · CHARGE', desc:'Cations, anions, and full particle counts for charged atoms.', items:interleave(CHEM_S3,TRIVIA_S3) },
+];
+
+/* =========================================================================
+   SCOREBOARD
+   ========================================================================= */
+const SCORE_KEY='asrg-scores-v1';
+function loadScores(){ try{ const s=localStorage.getItem(SCORE_KEY); if(s) return JSON.parse(s); }catch(e){} return {teams:[{name:'Team 1',score:0},{name:'Team 2',score:0},{name:'Team 3',score:0}]}; }
+function saveScores(){ try{ localStorage.setItem(SCORE_KEY,JSON.stringify(scoreState)); }catch(e){} }
+let scoreState=loadScores();
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function scoreboardHTML(){
+  const max=Math.max(0,...scoreState.teams.map(t=>t.score));
+  let h='<div class="scoreboard"><div class="sb-label">SCORES</div>';
+  scoreState.teams.forEach((t,i)=>{
+    const lead=t.score>0&&t.score===max;
+    h+='<div class="team'+(lead?' leader':'')+'">';
+    h+='<input class="team-name" value="'+esc(t.name)+'" onchange="renameTeam('+i+',this.value)" onfocus="this.select()">';
+    h+='<div class="team-score">'+t.score+'</div>';
+    h+='<div class="team-btns"><button class="t-plus" onclick="addPt('+i+')">+1</button><button class="t-minus" onclick="subPt('+i+')">&minus;</button></div>';
+    h+='</div>';
+  });
+  h+='<div class="sb-ctrl"><select onchange="setTeams(this.value)" title="Number of teams">';
+  for(let n=1;n<=5;n++) h+='<option value="'+n+'"'+(scoreState.teams.length===n?' selected':'')+'>'+n+(n===1?' team':' teams')+'</option>';
+  h+='</select><button class="reset" onclick="resetScores()">Reset</button></div></div>';
+  return h;
+}
+function renderScoreboards(){
+  const h=scoreboardHTML();
+  document.querySelectorAll('.score-mount').forEach(el=>{
+    const a=document.activeElement;
+    if(a&&el.contains(a)&&a.classList&&a.classList.contains('team-name')) return;
+    el.innerHTML=h;
+  });
+}
+function addPt(i){ scoreState.teams[i].score++; saveScores(); renderScoreboards(); }
+function subPt(i){ scoreState.teams[i].score=Math.max(0,scoreState.teams[i].score-1); saveScores(); renderScoreboards(); }
+function renameTeam(i,n){ scoreState.teams[i].name=(n||'').trim()||('Team '+(i+1)); saveScores(); renderScoreboards(); }
+function setTeams(n){ n=parseInt(n); while(scoreState.teams.length<n) scoreState.teams.push({name:'Team '+(scoreState.teams.length+1),score:0}); while(scoreState.teams.length>n) scoreState.teams.pop(); saveScores(); renderScoreboards(); }
+function resetScores(){ if(!confirm('Reset all team scores to zero? (Names stay.)')) return; scoreState.teams.forEach(t=>t.score=0); saveScores(); renderScoreboards(); }
+
+/* =========================================================================
+   NAVIGATION + PLAY FLOW
+   ========================================================================= */
+let curSection=0, curIndex=0;
+function renderMenu(){
+  const c=document.getElementById('section-cards');
+  c.innerHTML=SECTIONS.map((s,i)=>`
+    <div class="sec-card" onclick="startSection(${i})">
+      <div class="top">
+        <div class="num">ROUND ${i+1}</div>
+        <h2>${s.title.split('·')[1].trim()}</h2>
+        <div class="desc">${s.desc}</div>
+      </div>
+      <div class="foot">
+        <div class="meta"><span>5 CHEM</span><span>5 WILDCARD</span><span>${s.short.split('·')[0].trim()}</span></div>
+        <button class="go">Start Round ${i+1}</button>
+      </div>
+    </div>`).join('');
+}
+function showView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); renderScoreboards(); }
+function goMenu(){ stopTimer(); showView('menu-view'); }
+function startSection(i){ curSection=i; curIndex=0; showView('play-view'); renderQuestion(); }
+
+function currentItem(){ return SECTIONS[curSection].items[curIndex]; }
+function renderQuestion(){
+  const s=SECTIONS[curSection], d=currentItem();
+  document.getElementById('play-title').firstChild.textContent=s.title.split('·')[1].trim()+' ';
+  document.getElementById('play-sub').textContent=s.short;
+  document.getElementById('counter').textContent=(curIndex+1)+' / 10';
+  document.getElementById('reveal-stage').style.display='none';
+  document.getElementById('reveal-controls').style.display='none';
+  const qs=document.getElementById('q-stage'), qc=document.getElementById('q-controls');
+  qs.style.display=''; qc.style.display='flex';
+
+  if(d.type==='chem'){
+    qs.innerHTML=`<div class="card">
+      <div class="q-badges"><span class="lvl ${d.level==='Simple'?'simple':'challenge'}">${d.level.toUpperCase()}</span><span class="skill-tag">${d.skill}</span></div>
+      <div class="q-text chem">${d.q}</div>
+      <div class="whiteboard-hint"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Work it out on your whiteboard as a team. Reveal when the clock runs out.</span></div>
+    </div>`;
+    qc.innerHTML=`<button class="btn btn-reveal" onclick="reveal()">Reveal the Answer</button>`;
+  } else {
+    qs.innerHTML=`<div class="card trivia">
+      <div class="brain-break">Wildcard · Brain Break</div>
+      <span class="trivia-cat">${d.category}</span>
+      <div class="q-text">${d.q}</div>
+      <div class="choices">${d.choices.map((c,i)=>`<div class="choice"><div class="ltr">${'ABCD'[i]}</div><div>${c}</div></div>`).join('')}</div>
+    </div>`;
+    qc.innerHTML=`<button class="btn btn-reveal" style="background:var(--amber);color:#fff" onclick="reveal()">Reveal the Answer</button>`;
+  }
+  resetTimer();
+}
+function reveal(){
+  stopTimer();
+  const d=currentItem();
+  const rs=document.getElementById('reveal-stage');
+  document.getElementById('q-controls').style.display='none';
+  if(d.type==='chem'){
+    let vis='';
+    if(d.bohr) vis=`<div class="visual">${bohrSVG(d.bohr)}</div>`;
+    else if(d.spectrum) vis=`<div class="visual">${spectrumSVG(d.spectrum)}</div>`;
+    else if(d.emit) vis=`<div class="visual">${emitSVG(d.emit)}</div>`;
+    rs.innerHTML=`<div class="reveal">
+      <div class="reveal-head"><div class="chk">&#10003;</div><h3>Worked Answer</h3></div>
+      ${vis}<div class="sol">${d.solution}</div></div>`;
+  } else {
+    const qs=document.getElementById('q-stage');
+    qs.querySelectorAll('.choice').forEach((c,i)=>{ if(i===d.answer) c.classList.add('correct'); });
+    rs.innerHTML=`<div class="reveal trivia-rev">
+      <div class="reveal-head"><div class="chk">&#10003;</div><h3>${'ABCD'[d.answer]} &mdash; ${d.choices[d.answer]}</h3></div>
+      <div class="sol">${d.explanation}</div></div>`;
+  }
+  rs.style.display='';
+  const rc=document.getElementById('reveal-controls'); rc.style.display='flex';
+  document.getElementById('next-btn').textContent=(curIndex>=9)?'Finish Round →':'Next →';
+  rs.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function backToQuestion(){
+  document.getElementById('reveal-stage').style.display='none';
+  document.getElementById('reveal-controls').style.display='none';
+  document.getElementById('q-stage').style.display='';
+  document.getElementById('q-controls').style.display='flex';
+  // un-mark trivia choices
+  document.querySelectorAll('#q-stage .choice.correct').forEach(c=>c.classList.remove('correct'));
+  startTimer();
+}
+function nextQuestion(){ if(curIndex>=9){ goMenu(); return; } curIndex++; renderQuestion(); }
+
+/* =========================================================================
+   TIMER
+   ========================================================================= */
+let timer=null, remaining=120, paused=false, alarmed=false;
+function timerLen(){ return parseInt(document.getElementById('timer-len').value); }
+function stopTimer(){ if(timer){ clearInterval(timer); timer=null; } }
+function resetTimer(){ stopTimer(); remaining=timerLen(); alarmed=false; updateTimer(); startTimer(); }
+function startTimer(){
+  stopTimer(); paused=false; document.getElementById('pause-btn').textContent='Pause';
+  timer=setInterval(()=>{
+    if(paused) return;
+    remaining--;
+    updateTimer();
+    if(remaining>0) playTick(remaining);
+    if(remaining<=0){ stopTimer(); if(!alarmed){ alarmed=true; playAlarm(); } }
+  },1000);
+}
+function pauseTimer(){ paused=!paused; document.getElementById('pause-btn').textContent=paused?'Resume':'Pause'; }
+function updateTimer(){
+  const total=timerLen(), pct=Math.max(0,(remaining/total)*100);
+  const fill=document.getElementById('timer-fill'), num=document.getElementById('timer-num');
+  fill.style.width=pct+'%';
+  fill.classList.toggle('warn',pct<40&&pct>=15);
+  fill.classList.toggle('danger',pct<15);
+  num.classList.toggle('danger',pct<15);
+  const r=Math.max(0,remaining), m=Math.floor(r/60), s=r%60;
+  num.textContent=m+':'+(s<10?'0':'')+s;
+}
+
+/* =========================================================================
+   INIT
+   ========================================================================= */
+document.addEventListener('keydown',e=>{
+  if((e.key==='f'||e.key==='F') && document.getElementById('gate').classList.contains('hide')){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen();
+  }
+});
+renderMenu();
+renderScoreboards();
+</script>
+</body>
+</html>
