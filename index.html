@@ -7,17 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;700&family=Roboto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FAF7F2; --bg:#F5F1EA; --white:#FFFFFF; --ink:#1C1917; --warm:#57534E; --warm-muted:#7C6F5A;
-    --indigo:#4F46E5; --indigo-2:#6366F1; --indigo-hover:#4338CA; --indigo-soft:rgba(79,70,229,0.08); --indigo-line:rgba(79,70,229,0.28);
+    /* Canonical Spark / atomic-structure tokens */
+    --cream:#F0EBE3; --bg:#F7F3EE; --white:#FFFFFF; --ink:#1C1917; --warm:#57534E; --warm-muted:#7C6F5A;
+    --indigo:#6366F1; --indigo-2:#818CF8; --indigo-hover:#4F46E5; --indigo-soft:rgba(99,102,241,0.09); --indigo-line:rgba(99,102,241,0.30);
     --amber:#B4791F; --amber-soft:#FBF3E2; --amber-line:#EBD9A8;
-    --green:#4F7A3A; --red:#C24A32;
-    --line:#E7E0D3; --line-soft:#F0EBE1;
-    --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-    --font-serif:'Roboto Serif',Georgia,serif;
+    --green:#16A34A; --red:#EF4444;
+    --line:#DDD1C3; --line-soft:#F0EBE3;
+    --font-sans:'Inter',system-ui,-apple-system,sans-serif;
+    --font-serif:'Roboto Serif',Georgia,Cambria,serif;
     --font-mono:'Roboto Mono',monospace;
-    --sh-sm:0 1px 2px rgba(28,25,23,0.05),0 1px 3px rgba(28,25,23,0.06);
-    --sh-md:0 6px 20px rgba(28,25,23,0.08);
-    --sh-lg:0 18px 44px rgba(28,25,23,0.12);
+    --sh-sm:0 1px 2px rgba(17,17,17,0.05),0 2px 6px rgba(17,17,17,0.08);
+    --sh-md:0 4px 12px rgba(17,17,17,0.06),0 2px 4px rgba(17,17,17,0.04);
+    --sh-lg:0 16px 40px rgba(17,17,17,0.10),0 4px 12px rgba(17,17,17,0.06);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:var(--font-sans);background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
@@ -257,8 +258,9 @@ const UNLOCK_KEY = 'asrg-unlocked-v1';
 function isUnlocked(){ try{ return localStorage.getItem(UNLOCK_KEY)==='1'; }catch(e){ return false; } }
 function unlock(){
   document.getElementById('gate').classList.add('hide');
-  initAudio();
 }
+// AudioContext must start from a user gesture — init on the first tap/key, not at load.
+['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev, initAudio, {once:true}));
 if(isUnlocked()) unlock();
 document.getElementById('gate-btn').addEventListener('click', tryUnlock);
 document.getElementById('gate-input').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
@@ -483,6 +485,8 @@ function resetScores(){ if(!confirm('Reset all team scores to zero? (Names stay.
    NAVIGATION + PLAY FLOW
    ========================================================================= */
 let curSection=0, curIndex=0;
+let curChoices=[], curAnswer=0;   // shuffled trivia choices for the item on screen
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function renderMenu(){
   const c=document.getElementById('section-cards');
   c.innerHTML=SECTIONS.map((s,i)=>`
@@ -521,11 +525,15 @@ function renderQuestion(){
     </div>`;
     qc.innerHTML=`<button class="btn btn-reveal" onclick="reveal()">Reveal the Answer</button>`;
   } else {
+    // shuffle choices so the correct answer lands in a random A-D slot each time
+    const order = shuffle([0,1,2,3]);
+    curChoices = order.map(i=>d.choices[i]);
+    curAnswer = order.indexOf(d.answer);
     qs.innerHTML=`<div class="card trivia">
       <div class="brain-break">Wildcard · Brain Break</div>
       <span class="trivia-cat">${d.category}</span>
       <div class="q-text">${d.q}</div>
-      <div class="choices">${d.choices.map((c,i)=>`<div class="choice"><div class="ltr">${'ABCD'[i]}</div><div>${c}</div></div>`).join('')}</div>
+      <div class="choices">${curChoices.map((c,i)=>`<div class="choice"><div class="ltr">${'ABCD'[i]}</div><div>${c}</div></div>`).join('')}</div>
     </div>`;
     qc.innerHTML=`<button class="btn btn-reveal" style="background:var(--amber);color:#fff" onclick="reveal()">Reveal the Answer</button>`;
   }
@@ -546,9 +554,9 @@ function reveal(){
       ${vis}<div class="sol">${d.solution}</div></div>`;
   } else {
     const qs=document.getElementById('q-stage');
-    qs.querySelectorAll('.choice').forEach((c,i)=>{ if(i===d.answer) c.classList.add('correct'); });
+    qs.querySelectorAll('.choice').forEach((c,i)=>{ if(i===curAnswer) c.classList.add('correct'); });
     rs.innerHTML=`<div class="reveal trivia-rev">
-      <div class="reveal-head"><div class="chk">&#10003;</div><h3>${'ABCD'[d.answer]} &mdash; ${d.choices[d.answer]}</h3></div>
+      <div class="reveal-head"><div class="chk">&#10003;</div><h3>${'ABCD'[curAnswer]} &mdash; ${curChoices[curAnswer]}</h3></div>
       <div class="sol">${d.explanation}</div></div>`;
   }
   rs.style.display='';
