@@ -251,8 +251,10 @@
 <script>
 /* =========================================================================
    ACCESS GATE  (soft gate: keeps students out until game time)
-   Change PASSWORD below to set a new code.
+   To turn the gate ON later: set GATE_ENABLED = true and set a PASSWORD.
+   When GATE_ENABLED is false the game opens straight to the menu.
    ========================================================================= */
+const GATE_ENABLED = false;
 const PASSWORD = 'atomic2a';
 const UNLOCK_KEY = 'asrg-unlocked-v1';
 function isUnlocked(){ try{ return localStorage.getItem(UNLOCK_KEY)==='1'; }catch(e){ return false; } }
@@ -261,7 +263,7 @@ function unlock(){
 }
 // AudioContext must start from a user gesture — init on the first tap/key, not at load.
 ['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev, initAudio, {once:true}));
-if(isUnlocked()) unlock();
+if(!GATE_ENABLED || isUnlocked()) unlock();
 document.getElementById('gate-btn').addEventListener('click', tryUnlock);
 document.getElementById('gate-input').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
 function tryUnlock(){
