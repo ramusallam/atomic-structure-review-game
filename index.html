@@ -71,26 +71,48 @@
 
   /* ============ SCOREBOARD ============ */
   .score-mount{margin:24px 0}
-  .scoreboard{background:var(--white);border:1px solid var(--line);border-radius:15px;box-shadow:var(--sh-sm);padding:12px 14px;display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
-  .sb-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.16em;color:var(--warm-muted);display:flex;align-items:center;padding-right:12px;border-right:1px solid var(--line)}
-  .team{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:9px 12px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:118px;flex:1;position:relative;transition:all .2s}
-  .team.leader{background:linear-gradient(150deg,#EEF0FF,#E3E6FF);border-color:var(--indigo-line)}
-  .team.leader::after{content:'LEAD';position:absolute;top:-8px;right:8px;background:var(--indigo);color:#fff;font-size:0.52rem;font-family:var(--font-mono);font-weight:700;letter-spacing:0.12em;padding:2px 7px;border-radius:6px}
-  .team-name{font-size:0.78rem;font-weight:700;background:transparent;border:none;color:var(--ink);text-align:center;width:100%;max-width:120px;padding:2px;cursor:pointer;font-family:var(--font-sans)}
-  .team-name:focus{background:var(--white);outline:none;border-radius:5px;cursor:text;box-shadow:0 0 0 2px var(--indigo-soft)}
-  .team-score{font-size:1.7rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;color:var(--indigo);margin:2px 0}
-  .team.leader .team-score{color:var(--indigo-hover)}
-  .team-btns{display:flex;gap:5px;align-items:center}
-  .team-btns button{border:none;border-radius:7px;font-weight:700;cursor:pointer;font-family:var(--font-sans);transition:transform .1s,filter .15s}
-  .t-plus{background:var(--indigo);color:#fff;padding:5px 15px;font-size:0.95rem}
-  .t-plus:hover{filter:brightness(1.08);transform:scale(1.05)}
-  .t-minus{background:#EDE7DA;color:var(--warm);padding:4px 9px;font-size:0.8rem}
-  .t-minus:hover{background:#e2dccb}
-  .sb-ctrl{display:flex;gap:6px;align-items:center;margin-left:auto;padding-left:12px;border-left:1px solid var(--line)}
-  .sb-ctrl select,.sb-ctrl button{background:var(--cream);color:var(--warm);border:1px solid var(--line);padding:7px 11px;border-radius:8px;font-size:0.74rem;font-weight:600;font-family:var(--font-sans);cursor:pointer}
-  .sb-ctrl button:hover,.sb-ctrl select:hover{background:#efe9dd}
-  .sb-ctrl .reset{color:var(--red)}
-  @media(max-width:680px){.team{min-width:88px;padding:7px 8px}.team-score{font-size:1.35rem}.sb-label{padding-right:8px}}
+  .scoreboard{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-md);overflow:hidden}
+  .sb-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 16px 8px;border-bottom:1px solid var(--line-soft)}
+  .sb-title{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--warm-muted)}
+  .sb-title svg{width:14px;height:14px;stroke:var(--indigo);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sb-tools{display:flex;gap:4px;align-items:center}
+  .sb-tools select,.sb-tools .reset{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:var(--warm-muted);font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;padding:5px 8px;border-radius:7px;transition:background .15s,color .15s}
+  .sb-tools select:hover{background:var(--line-soft);color:var(--ink)}
+  .sb-tools .reset:hover{background:rgba(239,68,68,0.08);color:var(--red)}
+  .sb-teams{display:flex}
+  .team{flex:1;min-width:0;padding:15px 8px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;transition:background .25s}
+  .team+.team{border-left:1px solid var(--line-soft)}
+  .team::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--indigo-2));opacity:0;transition:opacity .3s}
+  .team.leader::before{opacity:1}
+  .team.leader{background:linear-gradient(180deg,rgba(99,102,241,0.055),rgba(99,102,241,0) 72%)}
+  .team-lead-chip{position:absolute;top:9px;right:9px;font-family:var(--font-mono);font-size:8.5px;font-weight:700;letter-spacing:0.16em;color:var(--indigo);background:var(--indigo-soft);padding:2px 7px;border-radius:6px;opacity:0;transform:translateY(-2px);transition:opacity .25s,transform .25s;pointer-events:none}
+  .team.leader .team-lead-chip{opacity:1;transform:none}
+  .team-name{font-size:0.8rem;font-weight:600;background:transparent;border:none;color:var(--warm);text-align:center;width:100%;max-width:130px;padding:3px 4px;cursor:pointer;font-family:var(--font-sans);border-radius:6px;transition:background .15s}
+  .team-name:hover{background:var(--line-soft)}
+  .team-name:focus{background:var(--white);outline:none;cursor:text;color:var(--ink);box-shadow:0 0 0 2px var(--indigo-soft)}
+  .team-score{font-size:2.15rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;color:var(--ink);letter-spacing:-0.02em}
+  .team.leader .team-score{color:var(--indigo)}
+  .team-score.pop{animation:scorePop .35s ease-out}
+  @keyframes scorePop{40%{transform:scale(1.22)}}
+  .team-btns{display:flex;gap:7px;align-items:center;margin-top:2px}
+  .team-btns button{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .15s,border-color .15s,transform .1s}
+  .team-btns button:active{transform:scale(0.9)}
+  .team-btns svg{width:15px;height:15px;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .t-minus{background:transparent;border:1px solid var(--line)}
+  .t-minus svg{stroke:var(--warm-muted)}
+  .t-minus:hover{background:var(--line-soft);border-color:var(--warm-muted)}
+  .t-plus{background:var(--indigo-soft);border:1px solid transparent}
+  .t-plus svg{stroke:var(--indigo)}
+  .t-plus:hover{background:var(--indigo)}
+  .t-plus:hover svg{stroke:#fff}
+  @media(max-width:680px){
+    .team{padding:11px 4px 12px;gap:4px}
+    .team-score{font-size:1.55rem}
+    .team-btns button{width:26px;height:26px}
+    .team-btns svg{width:13px;height:13px}
+    .team-lead-chip{display:none}
+    .team-name{font-size:0.72rem}
+  }
 
   /* ============ PLAY VIEW ============ */
   .play-head{background:var(--white);border-bottom:1px solid var(--line);padding:14px 26px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
@@ -453,20 +475,27 @@ function loadScores(){ try{ const s=localStorage.getItem(SCORE_KEY); if(s) retur
 function saveScores(){ try{ localStorage.setItem(SCORE_KEY,JSON.stringify(scoreState)); }catch(e){} }
 let scoreState=loadScores();
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+const SB_ICON_TROPHY='<svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>';
+const SB_ICON_PLUS='<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+const SB_ICON_MINUS='<svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>';
 function scoreboardHTML(){
   const max=Math.max(0,...scoreState.teams.map(t=>t.score));
-  let h='<div class="scoreboard"><div class="sb-label">SCORES</div>';
+  let h='<div class="scoreboard"><div class="sb-top">';
+  h+='<div class="sb-title">'+SB_ICON_TROPHY+'Scoreboard</div>';
+  h+='<div class="sb-tools"><select onchange="setTeams(this.value)" title="Number of teams">';
+  for(let n=1;n<=5;n++) h+='<option value="'+n+'"'+(scoreState.teams.length===n?' selected':'')+'>'+n+(n===1?' team':' teams')+'</option>';
+  h+='</select><button class="reset" onclick="resetScores()">Reset</button></div></div>';
+  h+='<div class="sb-teams">';
   scoreState.teams.forEach((t,i)=>{
     const lead=t.score>0&&t.score===max;
     h+='<div class="team'+(lead?' leader':'')+'">';
+    h+='<span class="team-lead-chip">LEAD</span>';
     h+='<input class="team-name" value="'+esc(t.name)+'" onchange="renameTeam('+i+',this.value)" onfocus="this.select()">';
     h+='<div class="team-score">'+t.score+'</div>';
-    h+='<div class="team-btns"><button class="t-plus" onclick="addPt('+i+')">+1</button><button class="t-minus" onclick="subPt('+i+')">&minus;</button></div>';
+    h+='<div class="team-btns"><button class="t-minus" onclick="subPt('+i+')" aria-label="Subtract a point">'+SB_ICON_MINUS+'</button><button class="t-plus" onclick="addPt('+i+')" aria-label="Add a point">'+SB_ICON_PLUS+'</button></div>';
     h+='</div>';
   });
-  h+='<div class="sb-ctrl"><select onchange="setTeams(this.value)" title="Number of teams">';
-  for(let n=1;n<=5;n++) h+='<option value="'+n+'"'+(scoreState.teams.length===n?' selected':'')+'>'+n+(n===1?' team':' teams')+'</option>';
-  h+='</select><button class="reset" onclick="resetScores()">Reset</button></div></div>';
+  h+='</div></div>';
   return h;
 }
 function renderScoreboards(){
@@ -477,8 +506,9 @@ function renderScoreboards(){
     el.innerHTML=h;
   });
 }
-function addPt(i){ scoreState.teams[i].score++; saveScores(); renderScoreboards(); }
-function subPt(i){ scoreState.teams[i].score=Math.max(0,scoreState.teams[i].score-1); saveScores(); renderScoreboards(); }
+function addPt(i){ scoreState.teams[i].score++; saveScores(); renderScoreboards(); bumpScore(i); }
+function subPt(i){ if(scoreState.teams[i].score<=0) return; scoreState.teams[i].score--; saveScores(); renderScoreboards(); bumpScore(i); }
+function bumpScore(i){ document.querySelectorAll('.score-mount').forEach(el=>{ const s=el.querySelectorAll('.team-score')[i]; if(s) s.classList.add('pop'); }); }
 function renameTeam(i,n){ scoreState.teams[i].name=(n||'').trim()||('Team '+(i+1)); saveScores(); renderScoreboards(); }
 function setTeams(n){ n=parseInt(n); while(scoreState.teams.length<n) scoreState.teams.push({name:'Team '+(scoreState.teams.length+1),score:0}); while(scoreState.teams.length>n) scoreState.teams.pop(); saveScores(); renderScoreboards(); }
 function resetScores(){ if(!confirm('Reset all team scores to zero? (Names stay.)')) return; scoreState.teams.forEach(t=>t.score=0); saveScores(); renderScoreboards(); }
