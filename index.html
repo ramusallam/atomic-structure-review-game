@@ -22,6 +22,8 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:var(--font-sans);background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
+  button,select,input{font:inherit}
+  button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid rgba(99,102,241,.38);outline-offset:3px}
   sub{font-size:0.7em} sup{font-size:0.7em}
   .eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--indigo);font-weight:700}
   .serif{font-family:var(--font-serif)}
@@ -193,6 +195,79 @@
   .card.trivia ~ .controls .btn-reveal{background:var(--amber);color:#fff}
 
   .app-foot{text-align:center;padding:26px 20px 40px;color:var(--warm-muted);font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.1em}
+  /* Simplified shared review-game layout */
+  .hero{padding:36px 30px 72px}
+  .hero h1{font-size:clamp(2rem,4vw,2.45rem);line-height:1.05;margin:8px 0 10px}
+  .hero p{font-size:.95rem;max-width:520px}
+  .hero .badges{margin-top:15px;gap:8px}
+  .cards{gap:18px;margin-top:-42px}
+  .sec-card{border-radius:16px;cursor:default}
+  .sec-card:hover{transform:translateY(-3px)}
+  .sec-card .top{padding:17px 20px 11px}
+  .sec-card h2{font-size:1.24rem;margin:6px 0 3px}
+  .sec-card .desc{font-size:.82rem;min-height:38px}
+  .sec-card .foot{padding:0 20px 16px}
+  .sec-card .go{min-height:44px;padding:9px;font-size:.9rem}
+  .menu-note{font-size:.75rem;margin:16px 0 22px}
+  .score-mount{margin:16px 0}
+  .team{padding:8px 6px 10px;gap:4px}
+  .team-lead-chip{top:6px;right:6px;font-size:8px;padding:2px 6px}
+  .team-score{font-size:1.7rem}
+  .team-btns button{width:44px;height:44px}
+  .play-head{padding:8px 24px;flex-wrap:nowrap}
+  .play-dashboard{max-width:1140px;margin:12px auto 0;padding:0 26px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:14px;align-items:stretch}
+  .play-dashboard .score-mount{margin:0}
+  .stage{max-width:1140px;margin:12px auto 28px;padding:0 26px}
+  .timer-panel{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-md);padding:10px 12px;display:flex;flex-direction:column;justify-content:center}
+  .timer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .timer-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--warm-muted)}
+  .timer-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:8px 0 0}
+  .timer-row select,.timer-row button{min-height:44px;padding:6px 8px;font-size:.78rem}
+  .back,.sb-tools select,.sb-tools .reset{min-height:44px}
+  .timer-bar{height:7px;margin:0}
+  .timer-num{font-size:1.55rem;line-height:1;margin:0}
+  .card{border-radius:16px;padding:22px 24px 20px;margin-bottom:12px}
+  .q-badges{margin-bottom:10px}
+  .q-text{font-size:1.24rem;line-height:1.35}
+  .q-text.chem{font-size:1.14rem}
+  .whiteboard-hint{margin-top:12px;padding:8px 11px;font-size:.78rem}
+  .choices{gap:9px;margin-top:14px}
+  .choice{min-height:58px;padding:11px 13px;gap:10px;font-size:.94rem}
+  .choice .ltr{width:30px;height:30px;font-size:.85rem}
+  .reveal{padding:20px 22px;margin-bottom:12px}
+  .reveal-head .chk svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .sol{font-size:.92rem;line-height:1.55}
+  .visual{gap:14px;margin:4px 0 12px;padding:12px}
+  .controls{gap:10px;margin-top:4px}
+  .btn{min-height:44px;padding:10px 24px;border-radius:10px;font-size:.9rem}
+  .btn:disabled{background:var(--line-soft);color:var(--warm-muted);cursor:not-allowed;transform:none}
+  .card.chem-mc .choice{font-size:1rem}
+  .trivia-cat{margin-bottom:9px}
+  .sliver{height:190px;margin-top:12px}
+  .face-hint{font-size:.78rem;color:var(--warm);margin-top:9px}
+  .face-reveal{grid-template-columns:minmax(0,240px) 1fr;gap:22px;border-radius:16px;padding:20px;margin-bottom:12px}
+  .face-name{font-size:1.65rem;margin:5px 0 3px}
+  .face-fact{margin-top:12px;padding:11px 13px;font-size:.9rem;line-height:1.5}
+  @media(max-width:800px){
+    .play-dashboard{grid-template-columns:1fr;padding:0 18px}
+    .stage{padding:0 18px}
+  }
+  @media(max-width:680px){
+    .sb-teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr))}
+    .team{padding:9px 4px 11px;border-top:1px solid var(--line-soft)}
+    .team+.team{border-left:none}
+    .team-btns button{width:44px;height:44px}
+    .team-btns svg{width:15px;height:15px}
+  }
+  @media(max-width:520px){
+    .hero{padding:30px 20px 62px}
+    .wrap{padding:0 14px}
+    .play-head{padding:8px 14px}
+    .play-title small{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card{padding:18px 16px 16px}
+    .q-text.chem{font-size:1.08rem}
+  }
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -214,69 +289,72 @@
 <!-- ============ MENU ============ -->
 <div id="menu-view" class="view active">
   <div class="hero">
-    <div class="kicker">Cycle 2 &middot; Follows the Atomic Structure Lecture (2a)</div>
+    <div class="kicker">Unit 1 &middot; Atomic Structure</div>
     <h1>Atomic Structure<br>Review Game</h1>
-    <p>Three rounds. Ten questions each. Chemistry and a wildcard brain-break, back to back. Work it out as a team before the reveal.</p>
+    <p>Choose as a team. Commit to an answer. Then reveal.</p>
     <div class="badges">
-      <span>3 ROUNDS</span><span>10 QUESTIONS EACH</span><span>2:00 PER QUESTION</span><span>1&ndash;5 TEAMS</span>
+      <span>3 ROUNDS</span><span>10 EACH</span><span>CHEM + WILDCARDS</span>
     </div>
   </div>
 
   <div class="wrap">
     <div class="cards" id="section-cards"></div>
     <div class="score-mount" id="score-menu"></div>
-    <div class="menu-note">Press F for fullscreen &middot; scores save on this device &middot; every other question is a wildcard trivia break</div>
+    <div class="menu-note">Press F for fullscreen. Scores save on this device.</div>
   </div>
 </div>
 
 <!-- ============ PLAY VIEW (reused for all 3 rounds) ============ -->
 <div id="play-view" class="view">
   <div class="play-head">
-    <button class="back" onclick="goMenu()">&larr; Rounds</button>
+    <button class="back" onclick="goMenu()">Rounds</button>
     <div class="play-title" id="play-title">Round<small id="play-sub">SKILL</small></div>
     <div class="counter" id="counter">1 / 10</div>
   </div>
 
-  <div class="wrap"><div class="score-mount" id="score-play"></div></div>
+  <div class="play-dashboard">
+    <div class="score-mount" id="score-play"></div>
+    <div class="timer-panel">
+      <div class="timer-head">
+        <span class="timer-label">Timer</span>
+        <div class="timer-num" id="timer-num" aria-live="off">2:00</div>
+      </div>
+      <div class="timer-bar" aria-hidden="true"><div class="timer-fill" id="timer-fill"></div></div>
+      <div class="timer-row">
+        <select id="timer-len" aria-label="Timer length" onchange="resetTimer()">
+          <option value="60">1:00</option>
+          <option value="90">1:30</option>
+          <option value="120" selected>2:00</option>
+          <option value="150">2:30</option>
+          <option value="180">3:00</option>
+        </select>
+        <button id="pause-btn" onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Restart</button>
+      </div>
+    </div>
+  </div>
 
   <div class="stage">
-    <div class="timer-row">
-      <label>Timer</label>
-      <select id="timer-len" onchange="resetTimer()">
-        <option value="60">1:00</option>
-        <option value="90">1:30</option>
-        <option value="120" selected>2:00</option>
-        <option value="150">2:30</option>
-        <option value="180">3:00</option>
-      </select>
-      <button id="pause-btn" onclick="pauseTimer()">Pause</button>
-      <button onclick="resetTimer()">Restart</button>
-    </div>
-    <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
-    <div class="timer-num" id="timer-num">2:00</div>
-
     <!-- question -->
-    <div id="q-stage"></div>
+    <div id="q-stage" tabindex="-1"></div>
     <div class="controls" id="q-controls"></div>
 
     <!-- reveal -->
-    <div id="reveal-stage" style="display:none"></div>
+    <div id="reveal-stage" tabindex="-1" aria-live="polite" style="display:none"></div>
     <div class="controls" id="reveal-controls" style="display:none">
-      <button class="btn btn-ghost" onclick="backToQuestion()">&larr; Back</button>
-      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next &rarr;</button>
+      <button class="btn btn-ghost" onclick="backToQuestion()">Back</button>
+      <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
     </div>
   </div>
 </div>
 
-<div class="app-foot">ATOMIC STRUCTURE REVIEW GAME &middot; BOHR &middot; ISOTOPES &middot; IONS &middot; SPARK LEARNING</div>
-
 <script>
 /* =========================================================================
-   ACCESS GATE — controlled from the Spark Studio, and ONLY from the Studio.
+   ACCESS GATE - controlled from the Spark Studio, and ONLY from the Studio.
    The gate starts hidden; it appears only if the cycle's 3b Review module
    has its "Password protected" toggle ON (the Studio verifies the code
    server-side). Toggle OFF → the game opens straight to the menu with no
-   flash. There is NO local access code — if the Studio can't be reached,
+   flash. There is NO local access code - if the Studio can't be reached,
    the game opens.
    ========================================================================= */
 const GATE = {
@@ -306,12 +384,12 @@ async function checkGate(code){
     return 'open';
   }catch(e){ return 'open'; }
 }
-// AudioContext must start from a user gesture — init on the first tap/key, not at load.
+// AudioContext must start from a user gesture - init on the first tap/key, not at load.
 ['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev, initAudio, {once:true}));
 (async()=>{
   if(isUnlocked()) return;
   const r = await checkGate('');
-  if(r===false || r==='rate') showGate();   // Studio toggle is ON — ask for the code
+  if(r===false || r==='rate') showGate();   // Studio toggle is ON - ask for the code
 })();
 document.getElementById('gate-btn').addEventListener('click', tryUnlock);
 document.getElementById('gate-input').addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
@@ -419,7 +497,7 @@ const CHEM_S1 = [
   { type:'chem', level:'Challenge', skill:'Reading a shell arrangement',
     q:`A mystery neutral atom has the shell arrangement <b>2, 8, 4</b>. Name the element, state how many valence electrons it has, and explain how the shell arrangement <em>alone</em> lets you identify it.`,
     bohr:{symbol:'Si',protons:14,neutrons:14,shells:[2,8,4]},
-    solution:`Add the shells: 2 + 8 + 4 = <strong>14 electrons</strong>. A neutral atom has equal protons and electrons, so it has 14 protons &mdash; and the proton count (the atomic number) <em>is</em> the element's identity. Atomic number 14 = <strong>silicon (Si)</strong>. Valence electrons are only the outermost shell: <strong>4</strong>. The arrangement alone is enough because total electrons &rarr; protons &rarr; atomic number &rarr; element.` },
+    solution:`Add the shells: 2 + 8 + 4 = <strong>14 electrons</strong>. A neutral atom has equal protons and electrons, so it has 14 protons - and the proton count (the atomic number) <em>is</em> the element's identity. Atomic number 14 = <strong>silicon (Si)</strong>. Valence electrons are only the outermost shell: <strong>4</strong>. The arrangement alone is enough because total electrons &rarr; protons &rarr; atomic number &rarr; element.` },
   { type:'chem', level:'Simple', skill:'Filling shells inside-out',
     q:`A neutral <b>phosphorus</b> atom has 15 electrons. Write its shell arrangement, filling from the inside out, and state how many valence electrons it has.`,
     bohr:{symbol:'P',protons:15,neutrons:16,shells:[2,8,5]},
@@ -431,7 +509,7 @@ const CHEM_S1 = [
   { type:'chem', level:'Simple', skill:'Identify the gas from its fingerprint',
     q:`Through a spectroscope you see exactly four sharp lines: red at <b>656 nm</b>, then lines at <b>486 nm</b> and <b>434 nm</b>, and violet at <b>410 nm</b>. What gas is in the tube, and what does each individual line represent?`,
     spectrum:H_LINES,
-    solution:`This is the exact fingerprint of <strong>hydrogen</strong> &mdash; the same four lines from the Reading Starlight key. Each line is one specific electron transition: an electron falling to <strong>n = 2</strong> from a higher level, releasing a photon of that exact wavelength. Four lines = four different starting levels (n = 3, 4, 5, 6) all landing on n = 2.` },
+    solution:`This is the exact fingerprint of <strong>hydrogen</strong> - the same four lines from the Reading Starlight key. Each line is one specific electron transition: an electron falling to <strong>n = 2</strong> from a higher level, releasing a photon of that exact wavelength. Four lines = four different starting levels (n = 3, 4, 5, 6) all landing on n = 2.` },
 ];
 const CHEM_S2 = [
   { type:'chem', level:'Simple', skill:'Protons & neutrons from a symbol',
@@ -439,13 +517,13 @@ const CHEM_S2 = [
     solution:`Atomic number (bottom) = protons = <strong>38</strong>. Neutrons = mass number &minus; atomic number = 88 &minus; 38 = <strong>50</strong>. So this atom has <strong>38 protons and 50 neutrons</strong>.` },
   { type:'chem', level:'Challenge', skill:'Isotopes vs. different elements',
     q:`Your lab partner compares two atoms. <b>Atom A</b> has 20 protons and 20 neutrons. <b>Atom B</b> has 20 protons and 22 neutrons. Your partner says, "They have different masses, so they must be different elements." Is your partner right? Write the nuclear symbol for each atom (mass on top, atomic number on bottom, then the symbol) and explain.`,
-    solution:`Your partner is <strong>wrong</strong>. The element is set by the <em>proton</em> count, and both atoms have 20 protons &mdash; so both are <strong>calcium</strong>. They are <strong>isotopes</strong>: same element, different neutron counts (and so different masses). Symbols: <strong><sup>40</sup><sub>20</sub>Ca</strong> (20+20) and <strong><sup>42</sup><sub>20</sub>Ca</strong> (20+22). Different mass number, same element.` },
+    solution:`Your partner is <strong>wrong</strong>. The element is set by the <em>proton</em> count, and both atoms have 20 protons - so both are <strong>calcium</strong>. They are <strong>isotopes</strong>: same element, different neutron counts (and so different masses). Symbols: <strong><sup>40</sup><sub>20</sub>Ca</strong> (20+20) and <strong><sup>42</sup><sub>20</sub>Ca</strong> (20+22). Different mass number, same element.` },
   { type:'chem', level:'Simple', skill:'Predict, then weight the average',
     q:`Rubidium has two natural isotopes: <b>Rb-85 (72.2%)</b> and <b>Rb-87 (27.8%)</b>. Before you touch a calculator, predict: will rubidium's relative atomic mass land closer to 85 or 87? Then calculate A<sub>r</sub> to check.`,
-    solution:`Prediction: Rb-85 is far more abundant (72.2%), so the average is pulled <strong>closer to 85</strong>. Calculate:<br>A<sub>r</sub> = (0.722 &times; 85) + (0.278 &times; 87) = 61.37 + 24.186 = <strong>85.56</strong>.<br>It lands just above 85 &mdash; exactly as predicted.` },
+    solution:`Prediction: Rb-85 is far more abundant (72.2%), so the average is pulled <strong>closer to 85</strong>. Calculate:<br>A<sub>r</sub> = (0.722 &times; 85) + (0.278 &times; 87) = 61.37 + 24.186 = <strong>85.56</strong>.<br>It lands just above 85 - exactly as predicted.` },
   { type:'chem', level:'Challenge', skill:'Weighted average, three isotopes',
     q:`Magnesium has three natural isotopes: <b>Mg-24 (79.0%)</b>, <b>Mg-25 (10.0%)</b>, and <b>Mg-26 (11.0%)</b>. First predict which whole number the relative atomic mass sits closest to and why. Then extend the weighted-average method to all three and calculate A<sub>r</sub>. Show every line.`,
-    solution:`Prediction: Mg-24 dominates at 79%, so A<sub>r</sub> sits <strong>closest to 24</strong>. Calculate:<br>(0.790 &times; 24) = 18.96<br>(0.100 &times; 25) = 2.50<br>(0.110 &times; 26) = 2.86<br>Add them: 18.96 + 2.50 + 2.86 = <strong>24.32</strong>.<br>Same method as two isotopes &mdash; just one more term.` },
+    solution:`Prediction: Mg-24 dominates at 79%, so A<sub>r</sub> sits <strong>closest to 24</strong>. Calculate:<br>(0.790 &times; 24) = 18.96<br>(0.100 &times; 25) = 2.50<br>(0.110 &times; 26) = 2.86<br>Add them: 18.96 + 2.50 + 2.86 = <strong>24.32</strong>.<br>Same method as two isotopes - just one more term.` },
   { type:'chem', level:'Simple', skill:'Relative atomic mass',
     q:`Gallium, the metal that melts in your hand, has two natural isotopes: <b>Ga-69 (60.1%)</b> and <b>Ga-71 (39.9%)</b>. Calculate the relative atomic mass of gallium. Show every line.`,
     solution:`A<sub>r</sub> = (0.601 &times; 69) + (0.399 &times; 71)<br>= 41.469 + 28.329<br>= <strong>69.80</strong>.<br>Just above 69, since Ga-69 is slightly more abundant.` },
@@ -453,7 +531,7 @@ const CHEM_S2 = [
 const CHEM_S3 = [
   { type:'chem', level:'Simple', skill:'Ion or isotope? Cation or anion?',
     q:`A potassium atom loses one electron. Did it just become a different <b>isotope</b> or an <b>ion</b>? And is the result a <b>cation</b> or an <b>anion</b>?`,
-    solution:`Losing an <em>electron</em> changes charge, not the nucleus &mdash; so it becomes an <strong>ion</strong>, not an isotope (isotopes differ in <em>neutrons</em>). With one more proton than electron, the charge is +1: a <strong>cation</strong> (K<sup>+</sup>). Cations are positive; anions are negative.` },
+    solution:`Losing an <em>electron</em> changes charge, not the nucleus - so it becomes an <strong>ion</strong>, not an isotope (isotopes differ in <em>neutrons</em>). With one more proton than electron, the charge is +1: a <strong>cation</strong> (K<sup>+</sup>). Cations are positive; anions are negative.` },
   { type:'chem', level:'Challenge', skill:'Full particle count for ions',
     q:`Give the full particle count (protons, neutrons, electrons) for each ion, then say which is the cation and which is the anion: <b>(a)</b> mass-32 sulfur with a 2&minus; charge, and <b>(b)</b> mass-27 aluminum with a 3+ charge.`,
     solution:`<strong>(a) Sulfur-32, 2&minus;:</strong> protons = 16, neutrons = 32 &minus; 16 = 16, electrons = 16 + 2 = <strong>18</strong>. Extra electrons &rarr; negative &rarr; <strong>anion</strong>.<br><strong>(b) Aluminum-27, 3+:</strong> protons = 13, neutrons = 27 &minus; 13 = 14, electrons = 13 &minus; 3 = <strong>10</strong>. Missing electrons &rarr; positive &rarr; <strong>cation</strong>.` },
@@ -469,23 +547,23 @@ const CHEM_S3 = [
 ];
 
 const TRIVIA_S1 = [
-  {type:'trivia',category:'POP CULTURE',q:`In 2024, Taylor Swift made Grammy history by winning Album of the Year for the fourth time &mdash; more than any artist ever. Which album earned her that record-breaking win?`,choices:['Midnights','Lover','Folklore',"1989 (Taylor's Version)"],answer:0,explanation:`<strong>Midnights.</strong> It won Album of the Year at the 2024 Grammys, giving Swift her record fourth win in the category, passing Frank Sinatra, Stevie Wonder, and Paul Simon. (Folklore was her third, in 2021.)`},
-  {type:'trivia',category:'SPORTS',q:`At the 2024 Paris Olympics, Simone Biles returned to the Games and racked up medals. How many GOLD medals did she win in Paris?`,choices:['Three','One','Five','Two'],answer:0,explanation:`<strong>Three.</strong> Team, all-around, and vault, plus a silver on floor. That pushed her to seven career Olympic golds &mdash; the most decorated American gymnast in history.`},
-  {type:'trivia',category:'INTERNET & SLANG',q:`The slang term "rizz" &mdash; charm, or the ability to attract someone &mdash; was Oxford's 2023 Word of the Year. It is widely believed to be a shortened form of which word?`,choices:['Charisma','Rizzoli','Wrist','Risk'],answer:0,explanation:`<strong>Charisma.</strong> Clipped from the middle of the word, the same way "fridge" comes from "refrigerator." It beat out finalists like "Swiftie" and "situationship."`},
-  {type:'trivia',category:'MUSIC',q:`Charli XCX's 2024 album became such a phenomenon &mdash; a whole lime-green "summer" aesthetic &mdash; that Collins Dictionary named its one-word title the 2024 Word of the Year. What is the album called?`,choices:['Brat','Crash','Pop 2','Vroom Vroom'],answer:0,explanation:`<strong>Brat.</strong> The minimalist lime-green cover defined "brat summer" and won Collins' 2024 Word of the Year. It also earned nine Grammy nominations.`},
-  {type:'trivia',category:'FILM & TV',q:`Christopher Nolan's three-hour biopic about the physicist behind the atomic bomb swept the 2024 Oscars with seven wins, including Best Picture. What was the film?`,choices:['Oppenheimer','Poor Things','The Holdovers','Killers of the Flower Moon'],answer:0,explanation:`<strong>Oppenheimer.</strong> Seven Academy Awards including Best Picture, Best Director (Nolan), Best Actor (Cillian Murphy), and Best Supporting Actor (Robert Downey Jr.) &mdash; beating its "Barbenheimer" twin, Barbie.`},
+  {type:'trivia',category:'POP CULTURE',q:`In 2024, Taylor Swift made Grammy history by winning Album of the Year for the fourth time - more than any artist ever. Which album earned her that record-breaking win?`,choices:['Midnights','Lover','Folklore',"1989 (Taylor's Version)"],answer:0,explanation:`<strong>Midnights.</strong> It won Album of the Year at the 2024 Grammys, giving Swift her record fourth win in the category, passing Frank Sinatra, Stevie Wonder, and Paul Simon. (Folklore was her third, in 2021.)`},
+  {type:'trivia',category:'SPORTS',q:`At the 2024 Paris Olympics, Simone Biles returned to the Games and racked up medals. How many GOLD medals did she win in Paris?`,choices:['Three','One','Five','Two'],answer:0,explanation:`<strong>Three.</strong> Team, all-around, and vault, plus a silver on floor. That pushed her to seven career Olympic golds - the most decorated American gymnast in history.`},
+  {type:'trivia',category:'INTERNET & SLANG',q:`The slang term "rizz" - charm, or the ability to attract someone - was Oxford's 2023 Word of the Year. It is widely believed to be a shortened form of which word?`,choices:['Charisma','Rizzoli','Wrist','Risk'],answer:0,explanation:`<strong>Charisma.</strong> Clipped from the middle of the word, the same way "fridge" comes from "refrigerator." It beat out finalists like "Swiftie" and "situationship."`},
+  {type:'trivia',category:'MUSIC',q:`Charli XCX's 2024 album became such a phenomenon - a whole lime-green "summer" aesthetic - that Collins Dictionary named its one-word title the 2024 Word of the Year. What is the album called?`,choices:['Brat','Crash','Pop 2','Vroom Vroom'],answer:0,explanation:`<strong>Brat.</strong> The minimalist lime-green cover defined "brat summer" and won Collins' 2024 Word of the Year. It also earned nine Grammy nominations.`},
+  {type:'trivia',category:'FILM & TV',q:`Christopher Nolan's three-hour biopic about the physicist behind the atomic bomb swept the 2024 Oscars with seven wins, including Best Picture. What was the film?`,choices:['Oppenheimer','Poor Things','The Holdovers','Killers of the Flower Moon'],answer:0,explanation:`<strong>Oppenheimer.</strong> Seven Academy Awards including Best Picture, Best Director (Nolan), Best Actor (Cillian Murphy), and Best Supporting Actor (Robert Downey Jr.) - beating its "Barbenheimer" twin, Barbie.`},
 ];
 const TRIVIA_S2 = [
   {type:'trivia',category:'WORLD HISTORY',q:`The Treaty of Westphalia (1648), often cited as a foundation of the modern state system, ended which prolonged European conflict?`,choices:["The Hundred Years' War","The Thirty Years' War",'The Napoleonic Wars','The War of the Spanish Succession'],answer:1,explanation:`<strong>The Thirty Years' War.</strong> The Peace of Westphalia ended this devastating religious and political conflict and is credited with establishing the principle of state sovereignty that still shapes international relations.`},
   {type:'trivia',category:'US GOVERNMENT',q:`Under the Constitution, how many electoral votes are needed to win the presidency, out of the total 538?`,choices:['218','270','290','301'],answer:1,explanation:`<strong>270.</strong> A majority of 538. That total is 435 House members + 100 senators + 3 votes for Washington, D.C. (granted by the 23rd Amendment).`},
   {type:'trivia',category:'GEOGRAPHY',q:`Which of these countries is completely landlocked, with no coastline on any ocean or sea?`,choices:['Vietnam','Bolivia','Portugal','Somalia'],answer:1,explanation:`<strong>Bolivia.</strong> It lost its Pacific coastline to Chile in the War of the Pacific (1879&ndash;1884) and still keeps a symbolic navy on Lake Titicaca. The other three all have ocean coastlines.`},
   {type:'trivia',category:'WORLD EVENTS',q:`Which country hosted the Summer Olympic Games most recently before 2026?`,choices:['Japan','Brazil','France','United Kingdom'],answer:2,explanation:`<strong>France.</strong> Paris hosted the 2024 Summer Olympics, its third time after 1900 and 1924. The next Summer Games are Los Angeles 2028.`},
-  {type:'trivia',category:'ECONOMICS',q:`In economics, what does GDP stand for?`,choices:['Gross Domestic Product','General Debt Percentage','Global Development Plan','Gross Distributed Payments'],answer:0,explanation:`<strong>Gross Domestic Product</strong> &mdash; the total market value of all finished goods and services produced within a country in a period. It is the most common single measure of an economy's size and health.`},
+  {type:'trivia',category:'ECONOMICS',q:`In economics, what does GDP stand for?`,choices:['Gross Domestic Product','General Debt Percentage','Global Development Plan','Gross Distributed Payments'],answer:0,explanation:`<strong>Gross Domestic Product</strong> - the total market value of all finished goods and services produced within a country in a period. It is the most common single measure of an economy's size and health.`},
 ];
 const TRIVIA_S3 = [
   {type:'trivia',category:'LITERATURE',q:`In George Orwell's "1984," what is the name of the omnipresent leader whose face appears on posters with the caption "BIG BROTHER IS WATCHING YOU"?`,choices:['Emmanuel Goldstein','Big Brother',"O'Brien",'Winston Smith'],answer:1,explanation:`<strong>Big Brother.</strong> The symbolic face of the Party (who may not even exist as a real person). Orwell coined the term in 1949 and it is now shorthand for any invasive surveillance authority.`},
   {type:'trivia',category:'SCIENCE',q:`Light from the Sun takes roughly how long to reach Earth?`,choices:['About 8 seconds','About 8 minutes','About 8 hours','About 8 days'],answer:1,explanation:`<strong>About 8 minutes</strong> (8 min 20 sec across ~93 million miles). We always see the Sun as it looked minutes ago, never in real time.`},
-  {type:'trivia',category:'GENERAL KNOWLEDGE',q:`Which country has the most time zones, owing to its far-flung overseas territories?`,choices:['Russia','United States','France','China'],answer:2,explanation:`<strong>France</strong> &mdash; 12 time zones thanks to territories across the Pacific, Caribbean, and Indian Ocean. Russia has 11; China uses just one official zone despite its width.`},
+  {type:'trivia',category:'GENERAL KNOWLEDGE',q:`Which country has the most time zones, owing to its far-flung overseas territories?`,choices:['Russia','United States','France','China'],answer:2,explanation:`<strong>France</strong> - 12 time zones thanks to territories across the Pacific, Caribbean, and Indian Ocean. Russia has 11; China uses just one official zone despite its width.`},
   {type:'trivia',category:'LIFE SKILLS',q:`On a credit card, what does the APR primarily tell you?`,choices:['The yearly cost of borrowing money on the card','The card’s maximum spending limit','The reward points earned per dollar','The monthly fee to keep the card open'],answer:0,explanation:`<strong>The yearly cost of borrowing.</strong> APR (Annual Percentage Rate) is the interest you pay on balances you don't pay off. Paying the full statement each month avoids it entirely.`},
   {type:'trivia',category:'ART & CULTURE',q:`Which artist painted the ceiling of the Sistine Chapel in the Vatican?`,choices:['Leonardo da Vinci','Raphael','Michelangelo','Donatello'],answer:2,explanation:`<strong>Michelangelo</strong>, between 1508 and 1512, including "The Creation of Adam." He considered himself a sculptor first and reportedly resented the years spent on the fresco.`},
 ];
@@ -515,16 +593,16 @@ function scoreboardHTML(){
   const max=Math.max(0,...scoreState.teams.map(t=>t.score));
   let h='<div class="scoreboard"><div class="sb-top">';
   h+='<div class="sb-title">'+SB_ICON_TROPHY+'Scoreboard</div>';
-  h+='<div class="sb-tools"><select onchange="setTeams(this.value)" title="Number of teams">';
+  h+='<div class="sb-tools"><select onchange="setTeams(this.value)" aria-label="Number of teams">';
   for(let n=1;n<=5;n++) h+='<option value="'+n+'"'+(scoreState.teams.length===n?' selected':'')+'>'+n+(n===1?' team':' teams')+'</option>';
   h+='</select><button class="reset" onclick="resetScores()">Reset</button></div></div>';
   h+='<div class="sb-teams">';
   scoreState.teams.forEach((t,i)=>{
     const lead=t.score>0&&t.score===max;
     h+='<div class="team'+(lead?' leader':'')+'">';
-    h+='<span class="team-lead-chip">LEAD</span>';
-    h+='<input class="team-name" value="'+esc(t.name)+'" onchange="renameTeam('+i+',this.value)" onfocus="this.select()">';
-    h+='<div class="team-score">'+t.score+'</div>';
+    if(lead) h+='<span class="team-lead-chip">LEAD</span>';
+    h+='<input class="team-name" aria-label="Team '+(i+1)+' name" value="'+esc(t.name)+'" onchange="renameTeam('+i+',this.value)" onfocus="this.select()">';
+    h+='<div class="team-score" aria-live="polite" aria-label="'+esc(t.name)+' score">'+t.score+'</div>';
     h+='<div class="team-btns"><button class="t-minus" onclick="subPt('+i+')" aria-label="Subtract a point">'+SB_ICON_MINUS+'</button><button class="t-plus" onclick="addPt('+i+')" aria-label="Add a point">'+SB_ICON_PLUS+'</button></div>';
     h+='</div>';
   });
@@ -549,27 +627,30 @@ function resetScores(){ if(!confirm('Reset all team scores to zero? (Names stay.
 /* =========================================================================
    NAVIGATION + PLAY FLOW
    ========================================================================= */
+const GAME_KEY='asrg-round-v1';
 let curSection=0, curIndex=0;
 let curChoices=[], curAnswer=0;   // shuffled trivia choices for the item on screen
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function saveRound(){ try{ sessionStorage.setItem(GAME_KEY,JSON.stringify({section:curSection,index:curIndex})); }catch(e){} }
+function clearRound(){ try{ sessionStorage.removeItem(GAME_KEY); }catch(e){} }
+function loadRound(){ try{ const s=JSON.parse(sessionStorage.getItem(GAME_KEY)); if(s&&s.section>=0&&s.section<SECTIONS.length&&s.index>=0&&s.index<10) return s; }catch(e){} return null; }
 function renderMenu(){
   const c=document.getElementById('section-cards');
   c.innerHTML=SECTIONS.map((s,i)=>`
-    <div class="sec-card" onclick="startSection(${i})">
+    <div class="sec-card">
       <div class="top">
         <div class="num">ROUND ${i+1}</div>
         <h2>${s.title.split('·')[1].trim()}</h2>
         <div class="desc">${s.desc}</div>
       </div>
       <div class="foot">
-        <div class="meta"><span>5 CHEM</span><span>5 WILDCARD</span><span>${s.short.split('·')[0].trim()}</span></div>
-        <button class="go">Start Round ${i+1}</button>
+        <button class="go" onclick="startSection(${i})">Start Round ${i+1}</button>
       </div>
     </div>`).join('');
 }
 function showView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); renderScoreboards(); }
-function goMenu(){ stopTimer(); showView('menu-view'); }
-function startSection(i){ curSection=i; curIndex=0; showView('play-view'); renderQuestion(); }
+function goMenu(){ stopTimer(); clearRound(); showView('menu-view'); }
+function startSection(i){ curSection=i; curIndex=0; saveRound(); showView('play-view'); renderQuestion(); }
 
 function currentItem(){ return SECTIONS[curSection].items[curIndex]; }
 function renderQuestion(){
@@ -586,9 +667,9 @@ function renderQuestion(){
     qs.innerHTML=`<div class="card">
       <div class="q-badges"><span class="lvl ${d.level==='Simple'?'simple':'challenge'}">${d.level.toUpperCase()}</span><span class="skill-tag">${d.skill}</span></div>
       <div class="q-text chem">${d.q}</div>
-      <div class="whiteboard-hint"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Work it out on your whiteboard as a team. Reveal when the clock runs out.</span></div>
+      <div class="whiteboard-hint"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Solve it together. Show your work.</span></div>
     </div>`;
-    qc.innerHTML=`<button class="btn btn-reveal" onclick="reveal()">Reveal the Answer</button>`;
+    qc.innerHTML=`<button class="btn btn-reveal" onclick="reveal()">Reveal answer</button>`;
   } else {
     // shuffle choices so the correct answer lands in a random A-D slot each time
     const order = shuffle([0,1,2,3]);
@@ -600,9 +681,10 @@ function renderQuestion(){
       <div class="q-text">${d.q}</div>
       <div class="choices">${curChoices.map((c,i)=>`<div class="choice"><div class="ltr">${'ABCD'[i]}</div><div>${c}</div></div>`).join('')}</div>
     </div>`;
-    qc.innerHTML=`<button class="btn btn-reveal" style="background:var(--amber);color:#fff" onclick="reveal()">Reveal the Answer</button>`;
+    qc.innerHTML=`<button class="btn btn-reveal" style="background:var(--amber);color:#fff" onclick="reveal()">Reveal answer</button>`;
   }
   resetTimer();
+  requestAnimationFrame(()=>qs.focus({preventScroll:true}));
 }
 function reveal(){
   stopTimer();
@@ -615,18 +697,19 @@ function reveal(){
     else if(d.spectrum) vis=`<div class="visual">${spectrumSVG(d.spectrum)}</div>`;
     else if(d.emit) vis=`<div class="visual">${emitSVG(d.emit)}</div>`;
     rs.innerHTML=`<div class="reveal">
-      <div class="reveal-head"><div class="chk">&#10003;</div><h3>Worked Answer</h3></div>
+      <div class="reveal-head"><div class="chk"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><h3>Worked answer</h3></div>
       ${vis}<div class="sol">${d.solution}</div></div>`;
   } else {
     const qs=document.getElementById('q-stage');
     qs.querySelectorAll('.choice').forEach((c,i)=>{ if(i===curAnswer) c.classList.add('correct'); });
     rs.innerHTML=`<div class="reveal trivia-rev">
-      <div class="reveal-head"><div class="chk">&#10003;</div><h3>${'ABCD'[curAnswer]} &mdash; ${curChoices[curAnswer]}</h3></div>
+      <div class="reveal-head"><div class="chk"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${'ABCD'[curAnswer]} · ${curChoices[curAnswer]}</h3></div>
       <div class="sol">${d.explanation}</div></div>`;
   }
   rs.style.display='';
   const rc=document.getElementById('reveal-controls'); rc.style.display='flex';
-  document.getElementById('next-btn').textContent=(curIndex>=9)?'Finish Round →':'Next →';
+  document.getElementById('next-btn').textContent=(curIndex>=9)?'Finish round':'Next';
+  rs.focus({preventScroll:true});
   rs.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function backToQuestion(){
@@ -638,7 +721,7 @@ function backToQuestion(){
   document.querySelectorAll('#q-stage .choice.correct').forEach(c=>c.classList.remove('correct'));
   startTimer();
 }
-function nextQuestion(){ if(curIndex>=9){ goMenu(); return; } curIndex++; renderQuestion(); }
+function nextQuestion(){ if(curIndex>=9){ goMenu(); return; } curIndex++; saveRound(); renderQuestion(); }
 
 /* =========================================================================
    TIMER
@@ -679,6 +762,8 @@ document.addEventListener('keydown',e=>{
 });
 renderMenu();
 renderScoreboards();
+const savedRound=loadRound();
+if(savedRound){ curSection=savedRound.section; curIndex=savedRound.index; showView('play-view'); renderQuestion(); }
 </script>
 </body>
 </html>
